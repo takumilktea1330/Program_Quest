@@ -4,25 +4,45 @@ using UnityEngine;
 
 public class WhileObject : FlowChartObject
 {
-    public int Size { get => GetSize(); }
+    public int VSize { get => GetVSize(); }
+    public int HSize { get => GetHSize(); }
 
     public List<FlowChartObject> Children { get; set; }
-    int GetSize()
+    int GetVSize()
     {
-        int size = 1;
+        int vSize = 1;
         foreach (var item in Children)
         {
             if (item is IfObject)
             {
-                size += (item as IfObject).VSize;
+                vSize += (item as IfObject).VSize;
             }
             else if (item is WhileObject)
             {
-                size += (item as WhileObject).Size;
+                vSize += (item as WhileObject).VSize;
             }
-            else size++;
+            else vSize++;
         }
-        return size;
+        return vSize;
+    }
+    int GetHSize()
+    {
+        int hSize = 1;
+        foreach (var item in Children)
+        {
+            if (item is IfObject)
+            {
+                if ((item as IfObject).HSize > hSize)
+                {
+                    hSize = (item as IfObject).HSize;
+                }
+                else if ((item as WhileObject).HSize > hSize)
+                {
+                    hSize = (item as WhileObject).HSize;
+                }
+            }
+        }
+        return hSize;
     }
     public WhileObject() : base()
     {

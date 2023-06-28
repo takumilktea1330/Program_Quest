@@ -25,19 +25,33 @@ public class IfObject : FlowChartObject
                     trueHSize = (item as IfObject).HSize;
                 }
             }
+            else if (item is WhileObject)
+            {
+                if ((item as WhileObject).HSize > trueHSize)
+                {
+                    trueHSize = (item as WhileObject).HSize;
+                }
+            }
         }
         return trueHSize;
     }
     int GetFalseHSize()
     {
         int falseHSize = 1;
-        foreach (var item in TrueList)
+        foreach (var item in FalseList)
         {
             if (item is IfObject)
             {
                 if ((item as IfObject).HSize > falseHSize)
                 {
                     falseHSize = (item as IfObject).HSize;
+                }
+            }
+            else if (item is IfObject)
+            {
+                if ((item as WhileObject).HSize > falseHSize)
+                {
+                    falseHSize = (item as WhileObject).HSize;
                 }
             }
         }
@@ -54,7 +68,7 @@ public class IfObject : FlowChartObject
             }
             else if (item is WhileObject)
             {
-                trueVSize += (item as WhileObject).Size;
+                trueVSize += (item as WhileObject).VSize;
             }
             else trueVSize++;
         }
@@ -71,7 +85,7 @@ public class IfObject : FlowChartObject
             }
             else if (item is WhileObject)
             {
-                falseVSize += (item as WhileObject).Size;
+                falseVSize += (item as WhileObject).VSize;
             }
             else falseVSize++;
         }

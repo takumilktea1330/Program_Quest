@@ -13,7 +13,7 @@ public class Battler
     int currentHp;
 
     public BattlerBase Base => _base;
-    
+
     public void Init(BattlerBase _base)
     {
         this._base = _base;
@@ -24,12 +24,15 @@ public class Battler
         maxHp = Base.MaxHp;
         currentHp = maxHp;
     }
-    
+
+    public void ReceiveDamage(int damage)
+    {
+        currentHp -= damage;
+    }
+
     public SkillBase GetSkill()
     {
         int index = Random.Range(0, Base.LearnableSkills.Count);
         return Base.LearnableSkills[index];
     }
-
-
 }
