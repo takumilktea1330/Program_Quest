@@ -12,6 +12,6 @@ public class WhileEndObject : FlowChartObject
     {
         base.Init();
         Name = "WhileEnd";
-        Prefab = Resources.Load<GameObject>("Prefabs/FlowChart/WhileEndPrefab");
+        OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/WhileEndPrefab");
     }
 }

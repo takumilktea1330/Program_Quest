@@ -11,6 +11,17 @@ public class IfObject : FlowChartObject
     public int TrueVSize { get => GetTrueVSize(); }
     public int FalseVSize { get => GetFalseVSize(); }
 
+    //条件付けに関するもの
+    //条件の比較対象一覧
+    enum ConditionMode
+    {
+        HP,
+        MP,
+        Turn,
+        Attack,
+        Defense,
+    }
+
     public List<FlowChartObject> TrueList { get; set; }
     public List<FlowChartObject> FalseList { get; set; }
     int GetTrueHSize()
@@ -94,7 +105,7 @@ public class IfObject : FlowChartObject
     public IfObject(): base()
     {
         Name = "IfObject";
-        Prefab = Resources.Load<GameObject>("Prefabs/FlowChart/IfPrefab");
+        OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/IfPrefab");
         TrueList = new List<FlowChartObject>();
         FalseList = new List<FlowChartObject>();
 

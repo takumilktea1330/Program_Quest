@@ -47,7 +47,7 @@ public class WhileObject : FlowChartObject
     public WhileObject() : base()
     {
         Name = "WhileObject";
-        Prefab = Resources.Load<GameObject>("Prefabs/FlowChart/WhilePrefab");
+        OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/WhilePrefab");
         Children = new List<FlowChartObject>();
         Init();
     }

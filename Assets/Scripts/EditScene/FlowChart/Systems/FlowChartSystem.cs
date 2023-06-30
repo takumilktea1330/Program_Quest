@@ -11,7 +11,7 @@ public class FlowChartSystem : MonoBehaviour
     [SerializeField] SkillKindSelectUI skillKindSelectUI;
     [SerializeField] SkillSelectUI skillSelectUI;
     [SerializeField] SwipeController swipeController;
-    [SerializeField] EditWindowUI editWindowUI;
+    
 
     // Lists
     List<FlowChartObject> objects = new List<FlowChartObject>();
@@ -23,13 +23,19 @@ public class FlowChartSystem : MonoBehaviour
     GameObject VLinePrefab;
     GameObject HLinePrefab;
 
+    GameObject SelectObjectFramePrefab;
+    GameObject SelectObjectFrame;
+
     FlowChartObject nextAddObject;
+    FlowChartObject selectedObject;
+
+    
 
     private enum State
     {
         View,
         Edit,
-        Adding,
+        Add,
         Moving,
         AddFlowSelect,
         SkillKindSelect,
@@ -161,13 +167,14 @@ public class FlowChartSystem : MonoBehaviour
 
             if (obj is IfObject)
             {
-                GameObject prefab =
-                    Instantiate(HLinePrefab, LineLocation(column, row), Quaternion.identity) as GameObject;
-                prefab.transform.localScale = new Vector3((obj as IfObject).TrueHSize, 1, 1);
-                linePrefabs.Add(prefab);
+                GameObject hLinePrefab = Instantiate(HLinePrefab, LineLocation(column, row), Quaternion.identity) as GameObject;
+                hLinePrefab.transform.localScale = new Vector3((obj as IfObject).TrueHSize, 1, 1);
+                linePrefabs.Add(hLinePrefab);
+
                 IfObject ifObject = (IfObject)obj;
                 obj.Place = Location(column, row);
-                presentPrefabs.Add(Instantiate(obj.Prefab, Location(column, row), Quaternion.identity));
+
+                ObjectDisplay(obj, column, row);
 
                 //次の行以降を描写
                 row++;
@@ -179,14 +186,16 @@ public class FlowChartSystem : MonoBehaviour
             {
                 WhileObject whileObject = (WhileObject)obj;
                 obj.Place = Location(column, row);
-                presentPrefabs.Add(Instantiate(obj.Prefab, Location(column, row), Quaternion.identity));
+
+                ObjectDisplay(obj, column, row);
+
                 row++;
                 MakeFlowChart(whileObject.Children, column, row);
                 row += whileObject.VSize - 1;
             }
             else
             {
-                presentPrefabs.Add(Instantiate(obj.Prefab, Location(column, row), Quaternion.identity));
+                ObjectDisplay(obj, column, row);
                 obj.Place = Location(column, row);
                 row++;
             }
@@ -213,6 +222,7 @@ public class FlowChartSystem : MonoBehaviour
     {
         VLinePrefab = Resources.Load<GameObject>("Prefabs/FlowChart/VLinePrefab");
         HLinePrefab = Resources.Load<GameObject>("Prefabs/FlowChart/HLinePrefab");
+        SelectObjectFramePrefab = Resources.Load<GameObject>("Prefabs/FlowChart/SelectObjectFramePrefab");
 
         UIInit();
         AllClear();
@@ -252,52 +262,30 @@ public class FlowChartSystem : MonoBehaviour
             case State.View:
                 if (Input.GetMouseButtonDown(0))
                 {
-                    GameObject selectedObject;
-
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit2D rayCastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
-                    if (rayCastHit2D)
+                    FlowChartObject obj = GetTouchedObject();
+                    if (obj != null)
                     {
-                        Debug.Log("To Edit Mode");
-                        selectedObject = rayCastHit2D.transform.gameObject;
-                        FlowChartObject editObject = flowList.Find(obj => obj.Place == selectedObject.transform.position);
-                        OpenEditWindow(editObject);
+                        //open property
+                    }
+                    else
+                    {
+                        //close property
                     }
                 }
                 break;
-            case State.Adding:
+            case State.Add:
                 if(Input.GetMouseButtonDown(0))
                 {
-                    GameObject selectedObject;
-
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit2D rayCastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
-                    if (rayCastHit2D)
+                    FlowChartObject obj = GetTouchedObject();
+                    if(obj != null)
                     {
-                        Debug.Log("hit");
-                        selectedObject = rayCastHit2D.transform.gameObject;
-                        Vector3 place = selectedObject.transform.position;
-                        StartCoroutine(SelectToWhereAddFlow(place));
+                        StartCoroutine(SelectToWhereAddFlow(obj.Place));
                     }
                 }
                 break;
             case State.Edit:
                 break;
             case State.Moving:
-                if (Input.GetMouseButtonDown(0))
-                {
-                    GameObject selectedObject;
-
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit2D rayCastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
-                    if (rayCastHit2D)
-                    {
-                        Debug.Log("hit");
-                        selectedObject = rayCastHit2D.transform.gameObject;
-                        Vector3 place = selectedObject.transform.position;
-                        StartCoroutine(SelectToWhereAddFlow(place));
-                    }
-                }
                 break;
             case State.AddFlowSelect:
                 break;
@@ -307,6 +295,37 @@ public class FlowChartSystem : MonoBehaviour
                 break;
         }
     }
+
+    private FlowChartObject GetTouchedObject()
+    {
+        GameObject touchedObject;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D rayCastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
+        if (rayCastHit2D)
+        {
+            touchedObject = rayCastHit2D.transform.gameObject;
+            Vector3 place = touchedObject.transform.position;
+
+            Destroy(SelectObjectFrame);
+            SelectObjectFrame = Instantiate(SelectObjectFramePrefab, place + new Vector3(0, 0, -1), Quaternion.identity);
+
+            return selectedObject = flowList.Find(obj => obj.Place == place);
+        }
+        else
+        {
+            Destroy(SelectObjectFrame);
+            return null;
+        }
+    }
+
+    private void ObjectDisplay(FlowChartObject obj, int column, int row)
+    {
+        obj.Prefab = Instantiate(obj.Prefab, Location(column, row), Quaternion.identity);
+        if(obj.DispText != null)obj.DispText.text = obj.Name;
+        presentPrefabs.Add(obj.Prefab);
+    }
+
     public void View()
     {
         state = State.View;
@@ -320,12 +339,12 @@ public class FlowChartSystem : MonoBehaviour
 
     private void AddIfObject()
     {
-        state = State.Adding;
+        state = State.Add;
         nextAddObject = new IfObject();
     }
     private void AddWhileObject()
     {
-        state = State.Adding;
+        state = State.Add;
         nextAddObject = new WhileObject();
     }
 
@@ -344,15 +363,10 @@ public class FlowChartSystem : MonoBehaviour
 
     private void AddSkillObject()
     {
-        state = State.Adding;
+        state = State.Add;
         nextAddObject = new SkillObject(player.Battler.GetSkill());
     }
 
-    private void OpenEditWindow(FlowChartObject editObject)
-    {
-        state = State.Edit;
-        editWindowUI.Open();
-    }
 
     private IEnumerator SelectToWhereAddFlow(Vector3 place)
     {

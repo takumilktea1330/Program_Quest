@@ -7,7 +7,7 @@ public class BlankObject : FlowChartObject
     public BlankObject() : base()
     {
         Name = "Blank";
-        Prefab = Resources.Load<GameObject>("Prefabs/FlowChart/BlankPrefab");
+        OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/BlankPrefab");
         Init();
     }
 }
