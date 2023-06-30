@@ -321,7 +321,7 @@ public class FlowChartSystem : MonoBehaviour
 
     private void ObjectDisplay(FlowChartObject obj, int column, int row)
     {
-        obj.Prefab = Instantiate(obj.Prefab, Location(column, row), Quaternion.identity);
+        obj.Prefab = Instantiate(obj.OriginalPrefab, Location(column, row), Quaternion.identity);
         if(obj.DispText != null)obj.DispText.text = obj.Name;
         presentPrefabs.Add(obj.Prefab);
     }

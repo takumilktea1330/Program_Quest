@@ -7,12 +7,26 @@ public class FlowChartObject
 {
     public string Name { get; set; }
     public List<FlowChartObject> Parent { get; set; }
-    public GameObject Prefab {
-         get => Prefab == null ? OriginalPrefab : Prefab; 
-         set => Prefab = value; 
-         }
-         
-    protected GameObject OriginalPrefab;
+    private GameObject prefab;
+
+    public GameObject Prefab
+    {
+        get
+        {
+            if (prefab == null)
+            {
+                prefab = OriginalPrefab;
+            }
+            return prefab;
+        }
+        set
+        {
+            prefab = value;
+        }
+    }
+
+
+    public GameObject OriginalPrefab;
     public Text DispText{ get => GetText();}
     private Text GetText()
     {
