@@ -42,8 +42,6 @@ public class FlowChartObject
         return null;
     }
     public Vector3 Place { get; set; }
-    public virtual void Init() { }
-    public FlowChartObject()
-    {
-    }
+    public virtual void Init(){}
+    public FlowChartObject(){}
 }

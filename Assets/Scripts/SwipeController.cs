@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class SwipeController : MonoBehaviour
 {
     [SerializeField] Camera mainCamera;
 
+    bool isControlable = true;
     float StartPosX;
     float StartPosY;
 
@@ -29,14 +31,29 @@ public class SwipeController : MonoBehaviour
         mainCamera.orthographicSize += 0.5f;
     }
 
-    void Update()
+    private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            StartPosX = mainCamera.ScreenToWorldPoint(Input.mousePosition).x;
-            StartPosY = mainCamera.ScreenToWorldPoint(Input.mousePosition).y;
+            Ray ray = new Ray(transform.position, transform.forward);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("UI"))
+                {
+                    isControlable = false;
+                    return;
+                }
+            }
+            else
+            {
+                isControlable = true;
+                StartPosX = mainCamera.ScreenToWorldPoint(Input.mousePosition).x;
+                StartPosY = mainCamera.ScreenToWorldPoint(Input.mousePosition).y;
+            }
         }
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && isControlable)
         {
             float EndPosX = mainCamera.ScreenToWorldPoint(Input.mousePosition).x;
             float EndPosY = mainCamera.ScreenToWorldPoint(Input.mousePosition).y;

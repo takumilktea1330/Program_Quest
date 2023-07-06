@@ -8,12 +8,12 @@ using UnityEngine.Events;
 public class SkillKindSelectUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public UnityAction SkillButtonOnClick;
-    List<TextButton> buttons = new List<TextButton>();
+    List<CombineButton> buttons = new List<CombineButton>();
     public UnityAction OnTouch;
     public UnityAction OnRelease;
     private void Start()
     {
-        buttons.AddRange(GetComponentsInChildren<TextButton>());
+        buttons.AddRange(GetComponentsInChildren<CombineButton>());
         buttons.ForEach(button => button.OnClick += ButtonClicked);
         buttons.ForEach(button => button.OnTouch += () => OnTouch?.Invoke());
         buttons.ForEach(button => button.OnRelease += () => OnRelease?.Invoke());

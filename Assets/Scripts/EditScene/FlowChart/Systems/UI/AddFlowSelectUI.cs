@@ -11,11 +11,11 @@ public class AddFlowSelectUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     public UnityAction WhileButtonOnClick;
     public UnityAction OnTouch;
     public UnityAction OnRelease;
-    List<TextButton> buttons = new List<TextButton>();
+    List<CombineButton> buttons = new List<CombineButton>();
 
     private void Init()
     {
-        buttons.AddRange(GetComponentsInChildren<TextButton>());
+        buttons.AddRange(GetComponentsInChildren<CombineButton>());
         buttons.ForEach(button => button.OnClick += ButtonClicked);
         buttons.ForEach(button => button.OnTouch += () => OnTouch?.Invoke());
         buttons.ForEach(button => button.OnRelease += () => OnRelease?.Invoke());
@@ -48,6 +48,8 @@ public class AddFlowSelectUI : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         Debug.Log("WhileButtonClicked");
         WhileButtonOnClick?.Invoke();
     }
+    
+    // スクリーンの移動操作を不可にする
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {
         OnTouch?.Invoke();

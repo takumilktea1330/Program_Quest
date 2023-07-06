@@ -11,6 +11,7 @@ public class FlowChartSystem : MonoBehaviour
     [SerializeField] SkillKindSelectUI skillKindSelectUI;
     [SerializeField] SkillSelectUI skillSelectUI;
     [SerializeField] SwipeController swipeController;
+    [SerializeField] EditSelectUI editSelectUI;
     
 
     // Lists
@@ -44,7 +45,7 @@ public class FlowChartSystem : MonoBehaviour
 
     private State state;
 
-    public bool AddNewObject(FlowChartObject addObject, Vector3 place)
+    public bool AddFlow(FlowChartObject addObject, Vector3 place)
     {
         FlowChartObject original = flowList.Find(obj => obj.Place == place);
 
@@ -90,19 +91,19 @@ public class FlowChartSystem : MonoBehaviour
             else
                 parent.Insert(index, addObject);
 
-            DisplayFlow();
+            AdjustFlow();
 
             flowList.Add(addObject);
             if (addObject is IfObject)
             {
                 flowList.Add(ifTrueEndObject);
                 flowList.Add(ifFalseEndObject);
-                DisplayFlow();
+                AdjustFlow();
             }
             else if (addObject is WhileObject)
             {
                 flowList.Add(whileEndObject);
-                DisplayFlow();
+                AdjustFlow();
             }
             return true;
         }
@@ -113,13 +114,20 @@ public class FlowChartSystem : MonoBehaviour
         }
     }
 
+    private void DeleteFlow()
+    {
+        objects.Remove(selectedObject);
+        flowList.Remove(selectedObject);
+        AdjustFlow();
+    }
+
     private bool IsInstallable(Vector3 place)
     {
         if (flowList.Find(obj => obj.Place == place) != null) return true;
         else return false;
     }
 
-    private void DisplayFlow()
+    private void AdjustFlow()
     {
         List<FlowChartObject> ifList = flowList.FindAll(obj => obj is IfObject);
         foreach (FlowChartObject obj in ifList)
@@ -230,25 +238,28 @@ public class FlowChartSystem : MonoBehaviour
 
     private void UIInit()
     {
-        addFlowSelectUI.OnTouch += () => swipeController.enabled = false;
-        addFlowSelectUI.OnRelease += () => swipeController.enabled = true;
+        //addFlowSelectUI.OnTouch += () => swipeController.enabled = false;
+        //addFlowSelectUI.OnRelease += () => swipeController.enabled = true;
 
-        skillKindSelectUI.OnTouch += () => swipeController.enabled = false;
-        skillKindSelectUI.OnRelease += () => swipeController.enabled = true;
+        //skillKindSelectUI.OnTouch += () => swipeController.enabled = false;
+        //skillKindSelectUI.OnRelease += () => swipeController.enabled = true;
 
         addFlowSelectUI.SkillButtonOnClick += SkillKindSelect;
         addFlowSelectUI.IfButtonOnClick += AddIfObject;
         addFlowSelectUI.WhileButtonOnClick += AddWhileObject;
+
+        editSelectUI.AddButtonOnClick += AddFlowSelect;
+        editSelectUI.DeleteButtonOnClick += DeleteFlow;
     }
 
     private void Test()
     {
-        AddNewObject(new SkillObject(player.Battler.GetSkill()), Location(0, 0));
-        AddNewObject(new SkillObject(player.Battler.GetSkill()), Location(0, 1));
+        AddFlow(new SkillObject(player.Battler.GetSkill()), Location(0, 0));
+        AddFlow(new SkillObject(player.Battler.GetSkill()), Location(0, 1));
 
-        AddNewObject(new IfObject(), Location(0, 2));
-        AddNewObject(new WhileObject(), Location(0, 3));
-        AddNewObject(new SkillObject(player.Battler.GetSkill()), Location(0, 4));
+        AddFlow(new IfObject(), Location(0, 2));
+        AddFlow(new WhileObject(), Location(0, 3));
+        AddFlow(new SkillObject(player.Battler.GetSkill()), Location(0, 4));
     }
 
     private void Update()
@@ -381,7 +392,7 @@ public class FlowChartSystem : MonoBehaviour
             if (isApplied)
             {
                 Debug.Log("Added");
-                AddNewObject(nextAddObject, place);
+                AddFlow(nextAddObject, place);
                 nextAddObject = null;
                 addFlowSelectUI.Close();
                 View();

@@ -5,10 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
-public class TextButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+public class ImageButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
     bool isClicked;
-    Text text;
+    Image image;
     Color normalColor = Color.blue;
     Color pressedColor = Color.gray;
 
@@ -20,13 +20,13 @@ public class TextButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
 
     public void Init()
     {
-        text = GetComponent<Text>();
-        text.color = normalColor;
+        image = GetComponent<Image>();
+        image.color = normalColor;
         IsClicked = false;
     }
     void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
     {
-        if(IsClicked)
+        if (IsClicked)
         {
             return;
         }
@@ -35,12 +35,12 @@ public class TextButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
     }
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {
-        text.color = pressedColor;
+        image.color = pressedColor;
         OnTouch?.Invoke();
     }
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
     {
-        text.color = normalColor;
+        image.color = normalColor;
         OnRelease?.Invoke();
     }
 }
