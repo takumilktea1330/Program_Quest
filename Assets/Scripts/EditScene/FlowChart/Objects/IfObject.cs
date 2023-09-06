@@ -105,6 +105,9 @@ public class IfObject : FlowChartObject
     public IfObject(): base()
     {
         Name = "IfObject";
+        Type = "If";
+        ExecutionTime = 1;
+        Explain = "If condition is true, execute flow below. If not, execute another one.";
         OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/IfPrefab");
         TrueList = new List<FlowChartObject>();
         FalseList = new List<FlowChartObject>();

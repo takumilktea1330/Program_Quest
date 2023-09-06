@@ -47,6 +47,9 @@ public class WhileObject : FlowChartObject
     public WhileObject() : base()
     {
         Name = "WhileObject";
+        Type = "While";
+        ExecutionTime = 0;
+        Explain = "The following flows are executed as long as the conditions are true.";
         OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/WhilePrefab");
         Children = new List<FlowChartObject>();
         Init();

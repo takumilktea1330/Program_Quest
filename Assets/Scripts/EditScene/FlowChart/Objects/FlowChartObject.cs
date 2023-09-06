@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class FlowChartObject
 {
     public string Name { get; set; }
+    public string Type { get; set; }
+    public int ExecutionTime { get; set; }
+    public string Explain { get; set; }
     public List<FlowChartObject> Parent { get; set; }
     private GameObject prefab;
 

@@ -12,6 +12,9 @@ public class IfEndObject : FlowChartObject
     {
         base.Init();
         Name = "IfEnd";
+        Type = "IfEnd";
+        ExecutionTime = 0;
+        Explain = "IfEnd";
         OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/IfEndPrefab");
     }
 }

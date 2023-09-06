@@ -12,6 +12,9 @@ public class WhileEndObject : FlowChartObject
     {
         base.Init();
         Name = "WhileEnd";
+        Type = "WhileEnd";
+        ExecutionTime = 0;
+        Explain = "WhileEnd";
         OriginalPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/WhileEndPrefab");
     }
 }

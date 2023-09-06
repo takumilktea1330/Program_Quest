@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Property : MonoBehaviour
 {
+    public string propertyName;
     public void Open()
     {
         gameObject.SetActive(true);
@@ -12,4 +13,5 @@ public class Property : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
 }

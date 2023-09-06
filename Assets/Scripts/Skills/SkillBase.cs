@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu]
 public class SkillBase : ScriptableObject
 {
+    public string Type { get; set;}
     [SerializeField] string _name;
     [SerializeField] int code;
     [SerializeField] int skillBasePower;
