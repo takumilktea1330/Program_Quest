@@ -254,12 +254,12 @@ public class FlowChartSystem : MonoBehaviour
 
     private void Test()
     {
-        AddFlow(new SkillObject(player.Battler.GetSkill()), Location(0, 0));
-        AddFlow(new SkillObject(player.Battler.GetSkill()), Location(0, 1));
+        AddFlow(new SkillObject(player.PlayerBattler.GetRandomSkillBase()), Location(0, 0));
+        AddFlow(new SkillObject(player.PlayerBattler.GetRandomSkillBase()), Location(0, 1));
 
         AddFlow(new IfObject(), Location(0, 2));
         AddFlow(new WhileObject(), Location(0, 3));
-        AddFlow(new SkillObject(player.Battler.GetSkill()), Location(0, 4));
+        AddFlow(new SkillObject(player.PlayerBattler.GetRandomSkillBase()), Location(0, 4));
     }
 
     private void Update()
@@ -375,7 +375,7 @@ public class FlowChartSystem : MonoBehaviour
     private void AddSkillObject()
     {
         state = State.Add;
-        nextAddObject = new SkillObject(player.Battler.GetSkill());
+        nextAddObject = new SkillObject(player.PlayerBattler.GetRandomSkillBase());
     }
 
 

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Battler Battler{ get; set; }
+    public Battler PlayerBattler{ get; set; }
     [SerializeField] BattlerBase battlerBase;
     void Start()
     {
-        Battler = new Battler();
-        Battler.Init(battlerBase);
+        PlayerBattler = new Battler();
+        PlayerBattler.Init(battlerBase);
     }
 
     // Update is called once per frame

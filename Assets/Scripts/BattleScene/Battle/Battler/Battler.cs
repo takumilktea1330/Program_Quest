@@ -30,9 +30,14 @@ public class Battler
         currentHp -= damage;
     }
 
-    public SkillBase GetSkill()
+    public SkillBase GetRandomSkillBase()
     {
         int index = Random.Range(0, Base.LearnableSkills.Count);
         return Base.LearnableSkills[index];
+    }
+    public Skill GetRandomSkill()
+    {
+        int index = Random.Range(0, Base.LearnableSkills.Count);
+        return new Skill(Base.LearnableSkills[index]);
     }
 }

@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Player
   initLevel: 1
-  offenceBasePower: 10
-  defenceBasePower: 10
+  offencePower: 5
+  defensePower: 2
+  speed: 3
+  maxHp: 10
   learnableSkills:
   - {fileID: 11400000, guid: 94c91d551762c45b69c59b8dad255a12, type: 2}
   - {fileID: 11400000, guid: 467af839c983f422586015f3a966f931, type: 2}
