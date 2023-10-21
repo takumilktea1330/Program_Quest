@@ -9,6 +9,7 @@ public class BattlerBase : ScriptableObject
     [SerializeField] int initLevel;
     [SerializeField] int offencePower;
     [SerializeField] int defensePower;
+    [SerializeField] int buffPower;
     [SerializeField] int speed;
     [SerializeField] int maxHp;
     [SerializeField] List<SkillBase> learnableSkills;
@@ -17,6 +18,7 @@ public class BattlerBase : ScriptableObject
     public int InitLevel { get => initLevel; set => initLevel = value; }
     public int OffencePower { get => offencePower; set => offencePower = value; }
     public int DefensePower { get => defensePower; set => defensePower = value; }
+    public int BuffPower { get => buffPower; set => buffPower = value; }
     public int Speed { get => speed; set => speed = value; }
     public int MaxHp { get => maxHp; set => maxHp = value; }
     public List<SkillBase> LearnableSkills { get => learnableSkills; set => learnableSkills = value; }

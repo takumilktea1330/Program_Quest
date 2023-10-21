@@ -9,10 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10f8aa9dd01724c22b78ae6233370043, type: 3}
-  m_Name: Attack
+  m_Script: {fileID: 11500000, guid: f9ecb56520ae646bb91af7aa22555706, type: 3}
+  m_Name: Enemy2
   m_EditorClassIdentifier: 
-  _name: Attack
-  code: 0
-  skillBasePower: 1
-  learnableLevel: 1
+  _name: Enemy2
+  initLevel: 2
+  offencePower: 10
+  defensePower: 5
+  buffPower: 2
+  speed: 1
+  maxHp: 20
+  learnableSkills:
+  - {fileID: 11400000, guid: 68227191b393d4d198b1e34f5f3e74ba, type: 2}

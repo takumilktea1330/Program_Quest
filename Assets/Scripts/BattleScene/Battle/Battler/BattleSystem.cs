@@ -10,20 +10,38 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] List<BattlerBase> EnemyBattlerBases;
 
     [SerializeField] PlayerController playerController;
+    [SerializeField] StatusUI statusUI;
+    [SerializeField] BattleDialogUI battleDialogUI;
+
+    void Start()
+    {
+        StartBattle();
+    }
 
     public void StartBattle()
     {
-        player = playerController.PlayerBattler;
         enemy = new Battler();
-        BattlerBase battlerBase = new(); 
-        battlerBase = GetRandomBattlerBase();
+        BattlerBase battlerBase = GetRandomBattlerBase();
         enemy.Init(battlerBase);
-        StartCoroutine(SetupBattle());
-
+        player = playerController.PlayerBattler;
+        SetupBattle(player, enemy);
     }
 
-    public IEnumerator SetupBattle()
+    public void SetupBattle(Battler player, Battler enemy)
     {
+        Debug.Log("Start Battle");
+        statusUI.StatusUpdate(player);
+        StartCoroutine(TakeTurn());
+    }
+
+    private IEnumerator TakeTurn()
+    {
+        yield return battleDialogUI.DialogUpdate($"Take Turn()");
+        yield return new WaitForSeconds(1);
+        Skill playerSkill = player.GetRandomSkill();
+        Debug.Log(playerSkill.Base.Name);
+        yield return battleDialogUI.AddToDialog($"{player.ExecuteSkill(enemy, player.GetRandomSkill())}");
+        statusUI.StatusUpdate(player);
         yield break;
     }
 

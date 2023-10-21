@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
 public class SkillBase : ScriptableObject
 {
     public string Type { get; set;}

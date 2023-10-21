@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public Battler PlayerBattler{ get; set; }
     [SerializeField] BattlerBase battlerBase;
-    void Start()
+    private void Awake() 
     {
         PlayerBattler = new Battler();
         PlayerBattler.Init(battlerBase);

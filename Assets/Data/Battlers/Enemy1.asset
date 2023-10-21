@@ -16,8 +16,9 @@ MonoBehaviour:
   initLevel: 1
   offencePower: 1
   defensePower: 1
+  buffPower: 1
   speed: 1
-  maxHp: 1
+  maxHp: 3
   learnableSkills:
-  - {fileID: 11400000, guid: 94c91d551762c45b69c59b8dad255a12, type: 2}
-  - {fileID: 11400000, guid: 467af839c983f422586015f3a966f931, type: 2}
+  - {fileID: 11400000, guid: 50bf41cff14794bd4916c8b16c764210, type: 2}
+  - {fileID: 11400000, guid: 0d4a65c97d7b444dc98c4520a770959a, type: 2}
