@@ -624,6 +624,52 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 30}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!1 &305746593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 305746595}
+  - component: {fileID: 305746594}
+  m_Layer: 0
+  m_Name: SkillFlow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &305746594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305746593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2f7bc564c9ff418f97db1bb8342796c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flow: []
+  objectsList: []
+--- !u!4 &305746595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305746593}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &317305266 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3315001133344513845, guid: 4b750d7dac3124016afa5fb4a181ec34, type: 3}
@@ -2579,6 +2625,7 @@ MonoBehaviour:
   skillSelectUI: {fileID: 1673736936}
   swipeController: {fileID: 1539979116}
   editSelectUI: {fileID: 1317505548}
+  skillFlow: {fileID: 305746594}
 --- !u!1 &1428233104
 GameObject:
   m_ObjectHideFlags: 0

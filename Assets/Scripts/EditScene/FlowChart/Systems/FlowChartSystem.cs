@@ -1,7 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;  //AssetDatabaseを使うために追加
+using System.IO;  //StreamWriterなどを使うために追加
+using System.Linq; //Selectを使うために追加
+using UnityEditor.VersionControl;  
 
 public class FlowChartSystem : MonoBehaviour
 {
@@ -12,11 +17,12 @@ public class FlowChartSystem : MonoBehaviour
     [SerializeField] SkillSelectUI skillSelectUI;
     [SerializeField] SwipeController swipeController;
     [SerializeField] EditSelectUI editSelectUI;
+    [SerializeField] SkillFlow skillFlow;
     
 
     // Lists
-    List<FlowChartObject> objects = new List<FlowChartObject>();
-    List<FlowChartObject> flowList = new List<FlowChartObject>();
+    List<FlowChartObject> flow;
+    List<FlowChartObject> objectsList;
     List<GameObject> presentPrefabs = new();
     List<GameObject> linePrefabs = new();
 
@@ -30,8 +36,16 @@ public class FlowChartSystem : MonoBehaviour
     FlowChartObject nextAddObject;
     FlowChartObject selectedObject;
 
-    
 
+
+    string datapath;
+
+    void Awake()
+    {
+        //保存先の計算をする
+        //これはAssets直下を指定. /以降にファイル名
+        datapath = Application.dataPath + "/FlowSaveData.json";
+    }
     private enum State
     {
         View,
@@ -47,7 +61,7 @@ public class FlowChartSystem : MonoBehaviour
 
     public bool AddFlow(FlowChartObject addObject, Vector3 place)
     {
-        FlowChartObject original = flowList.Find(obj => obj.Place == place);
+        FlowChartObject original = objectsList.Find(obj => obj.Place == place);
 
         if (original != null)
         {
@@ -83,28 +97,29 @@ public class FlowChartSystem : MonoBehaviour
                 Debug.Log("error: index == -1");
                 return false;
             }
-            if (parent != objects && original is BlankObject)
+            if (parent != flow && original is BlankObject)
             {
-                flowList.Remove(original);
+                objectsList.Remove(original);
                 parent[index] = addObject;
             }
             else
                 parent.Insert(index, addObject);
 
-            AdjustFlow();
+            MakeFlow();
 
-            flowList.Add(addObject);
+            objectsList.Add(addObject);
             if (addObject is IfObject)
             {
-                flowList.Add(ifTrueEndObject);
-                flowList.Add(ifFalseEndObject);
-                AdjustFlow();
+                objectsList.Add(ifTrueEndObject);
+                objectsList.Add(ifFalseEndObject);
+                MakeFlow();
             }
             else if (addObject is WhileObject)
             {
-                flowList.Add(whileEndObject);
-                AdjustFlow();
+                objectsList.Add(whileEndObject);
+                MakeFlow();
             }
+            SaveFlowData();
             return true;
         }
         else
@@ -116,20 +131,20 @@ public class FlowChartSystem : MonoBehaviour
 
     private void DeleteFlow()
     {
-        objects.Remove(selectedObject);
-        flowList.Remove(selectedObject);
-        AdjustFlow();
+        flow.Remove(selectedObject);
+        objectsList.Remove(selectedObject);
+        MakeFlow();
     }
 
     private bool IsInstallable(Vector3 place)
     {
-        if (flowList.Find(obj => obj.Place == place) != null) return true;
+        if (objectsList.Find(obj => obj.Place == place) != null) return true;
         else return false;
     }
 
-    private void AdjustFlow()
+    private void MakeFlow()
     {
-        List<FlowChartObject> ifList = flowList.FindAll(obj => obj is IfObject);
+        List<FlowChartObject> ifList = objectsList.FindAll(obj => obj is IfObject);
         foreach (FlowChartObject obj in ifList)
         {
             if (obj is IfObject)
@@ -144,13 +159,13 @@ public class FlowChartSystem : MonoBehaviour
                     {
                         ifObject.FalseList.Insert(ifObject.FalseList.Count - 1, blankObject);
                         blankObject.Parent = ifObject.FalseList;
-                        flowList.Add(blankObject);
+                        objectsList.Add(blankObject);
                     }
                     else if (ifObject.TrueVSize < ifObject.FalseVSize)
                     {
                         ifObject.TrueList.Insert(ifObject.TrueList.Count - 1, blankObject);
                         blankObject.Parent = ifObject.TrueList;
-                        flowList.Add(blankObject);
+                        objectsList.Add(blankObject);
                     }
                     else
                     {
@@ -160,10 +175,18 @@ public class FlowChartSystem : MonoBehaviour
             }
         }
         Reset();
-        MakeFlowChart(objects, 0, 0);
+        AssembleFlow(flow, 0, 0);
     }
 
-    private void MakeFlowChart(List<FlowChartObject> list, int column, int row)
+
+
+    /// <summary>
+    /// column, rowに対してlistを画面上に表示します
+    /// </summary>
+    /// <param name="list"></param>
+    /// <param name="column"></param>
+    /// <param name="row"></param>
+    private void AssembleFlow(List<FlowChartObject> list, int column, int row)
     {
         if (list.Count == 0)
         {
@@ -186,8 +209,8 @@ public class FlowChartSystem : MonoBehaviour
 
                 //次の行以降を描写
                 row++;
-                MakeFlowChart(ifObject.TrueList, column, row);
-                MakeFlowChart(ifObject.FalseList, column + ifObject.TrueHSize, row);
+                AssembleFlow(ifObject.TrueList, column, row);
+                AssembleFlow(ifObject.FalseList, column + ifObject.TrueHSize, row);
                 row += ifObject.VSize - 1;
             }
             else if (obj is WhileObject)
@@ -198,7 +221,7 @@ public class FlowChartSystem : MonoBehaviour
                 ObjectDisplay(obj, column, row);
 
                 row++;
-                MakeFlowChart(whileObject.Children, column, row);
+                AssembleFlow(whileObject.Children, column, row);
                 row += whileObject.VSize - 1;
             }
             else
@@ -223,17 +246,29 @@ public class FlowChartSystem : MonoBehaviour
     private void Start()
     {
         Init();
+        //JSONファイルがあればロード, なければ初期化関数へ
+        if (FindJsonfile())
+        {
+            LoadFlowData();
+        }
+        else
+        {
+            Initialize();
+        }
+        flow = skillFlow.Flow;
+        objectsList = skillFlow.ObjectsList;
         Test();
     }
 
     private void Init()
     {
+        state = State.View;
         VLinePrefab = Resources.Load<GameObject>("Prefabs/FlowChart/VLinePrefab");
         HLinePrefab = Resources.Load<GameObject>("Prefabs/FlowChart/HLinePrefab");
         SelectObjectFramePrefab = Resources.Load<GameObject>("Prefabs/FlowChart/SelectObjectFramePrefab");
 
         UIInit();
-        AllClear();
+        Reset();
     }
 
     private void UIInit()
@@ -252,6 +287,11 @@ public class FlowChartSystem : MonoBehaviour
         editSelectUI.DeleteButtonOnClick += DeleteFlow;
     }
 
+
+/// <summary>
+/// This function is for a execution test
+/// it'll be deleted
+/// </summary>
     private void Test()
     {
         AddFlow(new SkillObject(player.PlayerBattler.GetRandomSkillBase()), Location(0, 0));
@@ -307,6 +347,7 @@ public class FlowChartSystem : MonoBehaviour
         }
     }
 
+
     private FlowChartObject GetTouchedObject()
     {
         GameObject touchedObject;
@@ -321,7 +362,7 @@ public class FlowChartSystem : MonoBehaviour
             Destroy(SelectObjectFrame);
             SelectObjectFrame = Instantiate(SelectObjectFramePrefab, place + new Vector3(0, 0, -1), Quaternion.identity);
 
-            return selectedObject = flowList.Find(obj => obj.Place == place);
+            return selectedObject = objectsList.Find(obj => obj.Place == place);
         }
         else
         {
@@ -333,7 +374,7 @@ public class FlowChartSystem : MonoBehaviour
     private void ObjectDisplay(FlowChartObject obj, int column, int row)
     {
         obj.Prefab = Instantiate(obj.OriginalPrefab, Location(column, row), Quaternion.identity);
-        if(obj.DispText != null)obj.DispText.text = obj.Name;
+        if(obj.DispText != null) obj.DispText.text = obj.Name;
         presentPrefabs.Add(obj.Prefab);
     }
 
@@ -412,21 +453,79 @@ public class FlowChartSystem : MonoBehaviour
     public void AllClear()
     {
         state = State.View;
-        objects.Clear();
-        flowList.Clear();
+        flow.Clear();
+        objectsList.Clear();
         Reset();
-        SetStartObjects();
+        //SetStartObjects();
+    }
+    
+    //セーブするための関数
+    private void SaveFlowData()
+    {
+        StreamWriter writer;
+
+        //flowデータをJSONに変換
+        string jsonstr = JsonUtility.ToJson(skillFlow);
+        Debug.Log(jsonstr);
+
+        //JSONファイルに書き込み
+        writer = new StreamWriter(datapath, false);
+        writer.Write(jsonstr);
+        writer.Flush();
+        writer.Close();
+
+        Debug.Log($"Save completed! -> {datapath}");
     }
 
-    private void SetStartObjects()
+    //JSONファイルを読み込み, ロードするための関数
+    private void LoadFlowData()
+    {
+        string datastr = "";
+        StreamReader reader;
+        reader = new StreamReader(datapath);
+        datastr = reader.ReadToEnd();
+        reader.Close();
+
+        skillFlow = JsonUtility.FromJson<SkillFlow>(datastr);
+        Debug.Log("Load completed!");
+    }
+
+    //JSONファイルがない場合に呼び出す初期化関数
+    //初期値をセーブし, JSONファイルを生成する
+    private void Initialize()
     {
         //最初のObjectを追加
-        BlankObject startObject = new BlankObject();
-        startObject.Place = Location(0, 0);
-        startObject.Parent = objects;
-        objects.Add(startObject);
-        flowList.Add(startObject);
+        BlankObject startObject = new()
+        {
+            Place = Location(0, 0),
+            Parent = skillFlow.Flow
+        };
+        skillFlow.Flow.Add(startObject);
+        skillFlow.ObjectsList.Add(startObject);
         presentPrefabs.Add(Instantiate(startObject.Prefab, Location(0, 0), Quaternion.identity));
-        MakeFlowChart(objects, 0, 0);
+        AssembleFlow(skillFlow.Flow, 0, 0);
+
+        SaveFlowData();
+        Debug.Log("initialized!");
+    }
+
+    //JSONファイルの有無を判定するための関数
+    private bool FindJsonfile()
+    {
+        Debug.Log("findjsonfile");
+        string[] assets = AssetDatabase.FindAssets("FlowSaveData");
+        foreach(string asset in assets)Debug.Log($"{asset}");
+        Debug.Log(assets.Length);
+        if (assets.Length != 0)
+        {
+            string[] paths = assets.Select(guid => AssetDatabase.GUIDToAssetPath(guid)).ToArray();
+            Debug.Log($"検索結果:\n{string.Join("\n", paths)}");
+            return true;
+        }
+        else
+        {
+            Debug.Log("Jsonファイルがなかった");
+            return false;
+        }
     }
 }

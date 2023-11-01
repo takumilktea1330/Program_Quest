@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
 public class FlowChartObject
 {
     public string Name { get; set; }
@@ -46,5 +48,4 @@ public class FlowChartObject
     }
     public Vector3 Place { get; set; }
     public virtual void Init(){}
-    public FlowChartObject(){}
 }
