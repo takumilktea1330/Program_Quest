@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4911552941640269379}
   - component: {fileID: -6926099403299398524}
   m_Layer: 0
-  m_Name: BlankPrefab
+  m_Name: _BlankPrefab
   m_TagString: yourobj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

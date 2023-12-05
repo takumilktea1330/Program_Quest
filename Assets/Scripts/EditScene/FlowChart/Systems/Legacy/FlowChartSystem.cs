@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEditor;  //AssetDatabaseを使うために追加
 using System.IO;  //StreamWriterなどを使うために追加
 using System.Linq; //Selectを使うために追加
-using UnityEditor.VersionControl;  
+using UnityEditor.VersionControl;
 
 public class FlowChartSystem : MonoBehaviour
 {
@@ -17,8 +17,7 @@ public class FlowChartSystem : MonoBehaviour
     [SerializeField] SkillSelectUI skillSelectUI;
     [SerializeField] SwipeController swipeController;
     [SerializeField] EditSelectUI editSelectUI;
-    [SerializeField] SkillFlow skillFlow;
-    
+
 
     // Lists
     List<FlowChartObject> flow;
@@ -67,9 +66,9 @@ public class FlowChartSystem : MonoBehaviour
         {
             Debug.Log($"{original.Name}があった{place}に{addObject.Name}を追加します");
 
-            IfEndObject ifTrueEndObject=null;
-            IfEndObject ifFalseEndObject=null;
-            WhileEndObject whileEndObject=null;
+            IfEndObject ifTrueEndObject = null;
+            IfEndObject ifFalseEndObject = null;
+            WhileEndObject whileEndObject = null;
 
             if (addObject is IfObject)
             {
@@ -85,7 +84,7 @@ public class FlowChartSystem : MonoBehaviour
             else if (addObject is WhileObject)
             {
                 whileEndObject = new WhileEndObject();
-                   (addObject as WhileObject).Children.Add(whileEndObject);
+                (addObject as WhileObject).Children.Add(whileEndObject);
                 whileEndObject.Parent = (addObject as WhileObject).Children;
             }
             List<FlowChartObject> parent = original.Parent;
@@ -119,7 +118,6 @@ public class FlowChartSystem : MonoBehaviour
                 objectsList.Add(whileEndObject);
                 MakeFlow();
             }
-            SaveFlowData();
             return true;
         }
         else
@@ -246,17 +244,6 @@ public class FlowChartSystem : MonoBehaviour
     private void Start()
     {
         Init();
-        //JSONファイルがあればロード, なければ初期化関数へ
-        if (FindJsonfile())
-        {
-            LoadFlowData();
-        }
-        else
-        {
-            Initialize();
-        }
-        flow = skillFlow.Flow;
-        objectsList = skillFlow.ObjectsList;
         Test();
     }
 
@@ -288,10 +275,10 @@ public class FlowChartSystem : MonoBehaviour
     }
 
 
-/// <summary>
-/// This function is for a execution test
-/// it'll be deleted
-/// </summary>
+    /// <summary>
+    /// This function is for a execution test
+    /// it'll be deleted
+    /// </summary>
     private void Test()
     {
         AddFlow(new SkillObject(player.PlayerBattler.GetRandomSkillBase()), Location(0, 0));
@@ -325,10 +312,10 @@ public class FlowChartSystem : MonoBehaviour
                 }
                 break;
             case State.Add:
-                if(Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0))
                 {
                     FlowChartObject obj = GetTouchedObject();
-                    if(obj != null)
+                    if (obj != null)
                     {
                         StartCoroutine(SelectToWhereAddFlow(obj.Place));
                     }
@@ -374,7 +361,7 @@ public class FlowChartSystem : MonoBehaviour
     private void ObjectDisplay(FlowChartObject obj, int column, int row)
     {
         obj.Prefab = Instantiate(obj.OriginalPrefab, Location(column, row), Quaternion.identity);
-        if(obj.DispText != null) obj.DispText.text = obj.Name;
+        if (obj.DispText != null) obj.DispText.text = obj.Name;
         presentPrefabs.Add(obj.Prefab);
     }
 
@@ -457,75 +444,5 @@ public class FlowChartSystem : MonoBehaviour
         objectsList.Clear();
         Reset();
         //SetStartObjects();
-    }
-    
-    //セーブするための関数
-    private void SaveFlowData()
-    {
-        StreamWriter writer;
-
-        //flowデータをJSONに変換
-        string jsonstr = JsonUtility.ToJson(skillFlow);
-        Debug.Log(jsonstr);
-
-        //JSONファイルに書き込み
-        writer = new StreamWriter(datapath, false);
-        writer.Write(jsonstr);
-        writer.Flush();
-        writer.Close();
-
-        Debug.Log($"Save completed! -> {datapath}");
-    }
-
-    //JSONファイルを読み込み, ロードするための関数
-    private void LoadFlowData()
-    {
-        string datastr = "";
-        StreamReader reader;
-        reader = new StreamReader(datapath);
-        datastr = reader.ReadToEnd();
-        reader.Close();
-
-        skillFlow = JsonUtility.FromJson<SkillFlow>(datastr);
-        Debug.Log("Load completed!");
-    }
-
-    //JSONファイルがない場合に呼び出す初期化関数
-    //初期値をセーブし, JSONファイルを生成する
-    private void Initialize()
-    {
-        //最初のObjectを追加
-        BlankObject startObject = new()
-        {
-            Place = Location(0, 0),
-            Parent = skillFlow.Flow
-        };
-        skillFlow.Flow.Add(startObject);
-        skillFlow.ObjectsList.Add(startObject);
-        presentPrefabs.Add(Instantiate(startObject.Prefab, Location(0, 0), Quaternion.identity));
-        AssembleFlow(skillFlow.Flow, 0, 0);
-
-        SaveFlowData();
-        Debug.Log("initialized!");
-    }
-
-    //JSONファイルの有無を判定するための関数
-    private bool FindJsonfile()
-    {
-        Debug.Log("findjsonfile");
-        string[] assets = AssetDatabase.FindAssets("FlowSaveData");
-        foreach(string asset in assets)Debug.Log($"{asset}");
-        Debug.Log(assets.Length);
-        if (assets.Length != 0)
-        {
-            string[] paths = assets.Select(guid => AssetDatabase.GUIDToAssetPath(guid)).ToArray();
-            Debug.Log($"検索結果:\n{string.Join("\n", paths)}");
-            return true;
-        }
-        else
-        {
-            Debug.Log("Jsonファイルがなかった");
-            return false;
-        }
     }
 }
