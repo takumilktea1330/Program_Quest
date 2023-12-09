@@ -47,47 +47,30 @@ public class Chart : MonoBehaviour
                 Debug.Log("Begin to add skill flow");
                 newFlowObject = Instantiate(skillPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                 newFlow = newFlowObject.GetComponent<Flow>();
+                newFlow.Init(newStructId, type);
                 newFlow.SelectSkill();
                 break;
             case "if":
                 Debug.Log("Begin to add if flow");
                 newFlowObject = Instantiate(ifPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                 newFlow = newFlowObject.GetComponent<Flow>();
+                newFlow.Init(newStructId, type);
                 newFlow.SetCondition();
                 break;
             default:
                 Debug.Log("Argument Exception occured at AddFlow in Chart.cs");
+                ReturnStructId(newStructId);
                 Debug.Log($"Adding Flow({type}) is canceled");
                 return;
         }
         flows[newStructId] = newFlow;
+        Debug.Log("Adding Flow is accomplished!");
     }
 
-    public void ConnectFlows()
+    private void ReturnStructId(int id)
     {
-        //Flow flow1, flow2;
-
-       //flow1.NextId1 = flow2.StructId;
+        unusedIds.Add(id);
     }
-    // }
-    // private Flow GetTouchedObject()
-    // {
-    //     GameObject touchedObject;
-
-    //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //     RaycastHit2D rayCastHit2D = Physics2D.Raycast(ray.origin, ray.direction);
-    //     if (rayCastHit2D)
-    //     {
-    //         touchedObject = rayCastHit2D.transform.gameObject;
-    //         Vector3 place = touchedObject.transform.position;
-
-    //         return flows
-    //     }
-    //     else
-    //     {
-    //         return null;
-    //     }
-    // }
     
     private int GenStructId()
     {

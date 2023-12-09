@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Battler PlayerBattler{ get; set; }
+    [SerializeField] Chart chart;
     [SerializeField] BattlerBase battlerBase;
     private void Awake() 
     {

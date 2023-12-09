@@ -14,8 +14,8 @@ public class FlowChartSystem : MonoBehaviour
     [SerializeField] PlayerController player;
     [SerializeField] AddFlowSelectUI addFlowSelectUI;
     [SerializeField] SkillKindSelectUI skillKindSelectUI;
-    [SerializeField] SkillSelectUI skillSelectUI;
-    [SerializeField] SwipeController swipeController;
+    [SerializeField] SelectSkillUI selectSkillUI;
+   // [SerializeField] SwipeController swipeController;
     [SerializeField] EditSelectUI editSelectUI;
 
 
@@ -397,7 +397,7 @@ public class FlowChartSystem : MonoBehaviour
     private void SkillSelect()
     {
         state = State.SkillSelect;
-        skillSelectUI.Open();
+        selectSkillUI.Open();
     }
 
     private void AddSkillObject()

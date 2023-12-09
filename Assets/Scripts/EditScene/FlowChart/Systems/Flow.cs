@@ -1,10 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 
 public class Flow : MonoBehaviour
 {
+    private enum State
+    {
+        None,
+        Connection,
+        SetCondition,
+        SelectSkill,
+    }
+    State state;
+    SelectSkillUI selectSkillUI;
+    Camera _camera;
     int structId;
     int nextId1;
     int nextId2;
@@ -52,11 +63,35 @@ public class Flow : MonoBehaviour
     public string CompToken { get => compToken; set => compToken = value; }
     public string Rvalue { get => rvalue; set => rvalue = value; }
 
-    public Flow(int id, string type)
+    /// <summary>
+    /// initialize this flow
+    /// </summary>
+    /// <param name="id">newStructId(it must be unique)</param>
+    /// <param name="type">"skill", "if" </param>
+    public void Init(int id, string type)
     {
         structId = id;
         this.type = type;
         formulaType = 0;
+        _camera = Camera.main;
+        state = State.None; 
+    }
+
+    public void ConnectToFlow(Flow direction, bool isiffalse = false)
+    {
+        if(isiffalse)
+        {
+            NextId2 = direction.StructId;
+        }
+        else
+        {
+            NextId1 = direction.StructId;
+        }
+    }
+
+    private void OnMouseDrag()
+    {
+        transform.position = (Vector2)_camera.ScreenToWorldPoint(Input.mousePosition);
     }
 
     public void OpenProperty()
@@ -66,11 +101,31 @@ public class Flow : MonoBehaviour
 
     public void SelectSkill()
     {
-        
+        selectSkillUI.Open();
+        state = State.SelectSkill;
+    }
+
+    public void SelectSkillHandler()
+    {
+        selectSkillUI.UpdateUI();
     }
 
     public void SetCondition()
     {
 
+    }
+
+    private void Update()
+    {
+        switch(state)
+        {
+            case State.SelectSkill:
+                SelectSkillHandler();
+                break;
+            case State.SetCondition:
+                break;
+            case State.Connection:
+                break;
+        }
     }
 }

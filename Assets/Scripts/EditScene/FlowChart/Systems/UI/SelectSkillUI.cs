@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillSelectUI : MonoBehaviour
+public class SelectSkillUI : MonoBehaviour
 {
     private void Start()
     {
@@ -15,5 +15,9 @@ public class SkillSelectUI : MonoBehaviour
     public void Close()
     {
         gameObject.SetActive(false);
+    }
+    public void UpdateUI()
+    {
+        
     }
 }
