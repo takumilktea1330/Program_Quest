@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41c45c161b4dc4e39964eae673851f19, type: 3}
-  m_Name: NormalAttack
+  m_Name: Patel Cristal-ify
   m_EditorClassIdentifier: 
-  _name: NormalAttack
-  attackPower: 1
+  _name: Patel Cristal-ify
+  attackPower: 0

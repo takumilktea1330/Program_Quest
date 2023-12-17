@@ -17,13 +17,13 @@ public class SelectSkillUI : MonoBehaviour
     private void Start()
     {
         Buttons = new();
+        SkillList = new();
         Close();
         Test();
     }
     private void Test()
     {
-        SkillList = new();
-        AttackSkillBase normalAttack = Resources.Load<AttackSkillBase>("Data/Skills/AttackSkills/NormalAttack");
+        AttackSkillBase normalAttack = Resources.Load<AttackSkillBase>("Data/Skills/AttackSkills/Normal Attack");
         if(normalAttack == null)
         {
             Debug.Log("normalAttack is not existed");
@@ -39,13 +39,14 @@ public class SelectSkillUI : MonoBehaviour
         {
             GameObject newSkillButton = Instantiate(SkillPrefab, Vector3.zero, quaternion.identity);
             Buttons.Add(newSkillButton);
-            newSkillButton.transform.SetParent(content.transform, true);
+            newSkillButton.transform.SetParent(content.transform, true); // contentの子にbuttonを追加
             Button button = newSkillButton.GetComponent<Button>();
             Text text = newSkillButton.GetComponentInChildren<Text>();
             text.text = skill.Base.Name;
-            button.onClick.AddListener(() => SetSkill(skill));
-            button.onClick.AddListener(targetFlow.Display);
-            button.onClick.AddListener(Close);
+
+            button.onClick.AddListener(() => SetSkill(skill)); // press button to set skill
+            button.onClick.AddListener(targetFlow.Display); // press button to display flow name
+            button.onClick.AddListener(Close); //press button to close SelectSkillsUI
         }
     }
     public void SetSkill(Skill skill)
@@ -60,10 +61,5 @@ public class SelectSkillUI : MonoBehaviour
         Buttons.Clear();
         targetFlow = null;
         gameObject.SetActive(false);
-
-    }
-    public void UpdateUI()
-    {
-        
     }
 }

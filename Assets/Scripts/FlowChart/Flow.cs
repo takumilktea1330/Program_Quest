@@ -69,7 +69,6 @@ public class Flow : MonoBehaviour
     public string Rvalue { get => rvalue; set => rvalue = value; }
     public Skill Skill { get => skill; set => skill = value; }
     public Text DisplayText { get => displayText; set => displayText = value; }
-    GameObject myCanvas;
 
     public UnityAction<Flow> OnSelectSkill;
     public UnityAction<Flow> OnOpenProperty;
