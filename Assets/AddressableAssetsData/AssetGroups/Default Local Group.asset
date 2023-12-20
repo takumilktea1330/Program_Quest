@@ -16,7 +16,23 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: f3963dda24210462b85a1c719abc91e2
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: a0cb76c89a5db476abd6d3bd7e47a421
+    m_Address: SkillFlowPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 84cf1f21a78f94b6abe0196e3a5fb5d5
+    m_Address: IfFlowPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1ae4fe4e2b8264b7083257d590d81090
+    m_Address: Normal Attack
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9f04f66efd9d44e538dca5b7fd91db01
+    m_Address: Patel Cristal-ify
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 552f742dc413b4909bddd854fd952d7b, type: 2}
   m_SchemaSet:

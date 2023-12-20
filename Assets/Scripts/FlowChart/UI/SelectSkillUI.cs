@@ -4,6 +4,8 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SelectSkillUI : MonoBehaviour
 {
@@ -23,12 +25,7 @@ public class SelectSkillUI : MonoBehaviour
     }
     private void Test()
     {
-        AttackSkillBase normalAttack = Resources.Load<AttackSkillBase>("Data/Skills/AttackSkills/Normal Attack");
-        if(normalAttack == null)
-        {
-            Debug.Log("normalAttack is not existed");
-        }
-        SkillList.Add(new AttackSkill(normalAttack));
+        
     }
     public void Open(Flow targetFlow)
     {
