@@ -60,7 +60,7 @@ public class Chart : MonoBehaviour
                 newFlowObject = Instantiate(ifFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
                 newFlow = newFlowObject.GetComponent<Flow>();
                 newFlow.Init(newStructId, type);
-                //newFlow.SetCondition();
+                newFlow.SetCondition();
                 break;
             default:
                 Debug.Log($"Argument Exception occured at AddFlow() in Chart.cs\n" + "Adding Flow({type}) is canceled");
@@ -87,7 +87,6 @@ public class Chart : MonoBehaviour
     {
         selectSkillUI.Close();
         addFlowUI.Open();
-
     }
 
     private void ReturnStructId(int id)

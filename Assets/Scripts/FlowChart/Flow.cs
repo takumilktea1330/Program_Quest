@@ -64,8 +64,6 @@ public class Flow : MonoBehaviour
     {
         if(Data.Type == "skill")
         Debug.Log($"This is Flow(Struct ID: {Data.StructId}) Data\n"+
-        $"Position: {gameObject.transform.position}\n"+
-        $"Skill Name: {Data.SkillName}\n"+
-        "\n");
+        $"Position: {transform.position}, Skill Name: {Data.SkillName}\n");
     }
 }

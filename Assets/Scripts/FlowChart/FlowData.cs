@@ -23,9 +23,9 @@ public class FlowData
     // condition (if, while)
 
     int formulaType;
-    string lvalue1; // var name
-    string calcToken; // +, -, *, /
-    string lvalue2; // var name = (player, enemy) status, skill power or turn
+    string lvalue1; // var name = (player, enemy) status, skill power or turn
+    string calcToken; // +, -, *, /, %
+    string lvalue2; // var name
     string compToken; // <, <=, >, >=, ==
     string rvalue; //varname or int
 
@@ -45,8 +45,8 @@ public class FlowData
 
     /// <summary>
     /// formulaType depending on this rule below
-    /// unset: 0
-    /// true: 1
+    /// true: 0
+    /// false: 1
     /// varname(compToken)int : 2
     /// varname(compToken)varname : 3
     /// varname(calcToken)varname(compToken)int : 4

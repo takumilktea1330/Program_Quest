@@ -16,6 +16,7 @@ public class SelectSkillUI : MonoBehaviour
     Flow targetFlow;
 
     public UnityAction OnSettingSkillEnded;
+    
     private void Start()
     {
         Buttons = new();
@@ -38,7 +39,7 @@ public class SelectSkillUI : MonoBehaviour
         SkillList.Add(SkillManager.SkillKind.Felyca_Defense);
         SkillList.Add(SkillManager.SkillKind.Cryptical_Heal);
     }
-    
+
     public void Open(Flow targetFlow)
     {
         targetFlow.ShowData();
