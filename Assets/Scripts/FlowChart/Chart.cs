@@ -3,33 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class Chart : MonoBehaviour
 {
     [SerializeField] SelectSkillUI selectSkillUI;
     [SerializeField] AddFlowUI addFlowUI;
     const int MAXARR = 256;
-    GameObject skillPrefab;
-    GameObject ifPrefab;
+    AsyncOperationHandle<GameObject> skillFlowPrefabHandler;
+    AsyncOperationHandle<GameObject> ifFlowPrefabHandler;
     Flow[] flows = new Flow[MAXARR]; // array to control flow exists in this chart
     List<int> unusedIds = Enumerable.Range(0, MAXARR).ToList(); // a list to get unique struct id
 
     private void Start()
     {
-        // load prefabs from Assets/Resources
-        skillPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/SkillFlowPrefab");
-        ifPrefab = Resources.Load<GameObject>("Prefabs/FlowChart/IfFlowPrefab");
+        StartCoroutine(Load());
         selectSkillUI.OnSettingSkillEnded += ToAddFlow;
-
-        //for test it will be deleted
-        //Test();
     }
 
-    //for test it will be deleted
-    private void Test()
+    // load flow prefabs from Assets/Prefabs
+    private IEnumerator Load()
     {
-        Debug.Log("This is a test program. If it is not test, delete or comment out Test() from Start()");
-        AddFlow("skill");
+        skillFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillFlowPrefab");
+        yield return skillFlowPrefabHandler;
+        ifFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/IfFlowPrefab");
+        yield return ifFlowPrefabHandler;
+        yield break;
     }
 
 
@@ -39,7 +39,7 @@ public class Chart : MonoBehaviour
 
         if(newStructId == -1) // non-unique struct id exception
         {
-            Debug.Log($"Adding Flow({type}) is canceled");
+            Debug.Log($"Ovewflow Exception: Adding Flow({type}) is canceled");
             return;
         }
 
@@ -49,7 +49,7 @@ public class Chart : MonoBehaviour
         {
             case "skill":
                 Debug.Log("Begin to add skill flow");
-                newFlowObject = Instantiate(skillPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                newFlowObject = Instantiate(skillFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
                 newFlow = newFlowObject.GetComponent<Flow>();
                 newFlow.Init(newStructId, type);
                 newFlow.OnSelectSkill += ToSelectSkill;
@@ -57,29 +57,28 @@ public class Chart : MonoBehaviour
                 break;
             case "if":
                 Debug.Log("Begin to add if flow");
-                newFlowObject = Instantiate(ifPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                newFlowObject = Instantiate(ifFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
                 newFlow = newFlowObject.GetComponent<Flow>();
                 newFlow.Init(newStructId, type);
                 //newFlow.SetCondition();
                 break;
             default:
-                Debug.Log("Argument Exception occured at AddFlow in Chart.cs");
+                Debug.Log($"Argument Exception occured at AddFlow() in Chart.cs\n" + "Adding Flow({type}) is canceled");
                 ReturnStructId(newStructId);
-                Debug.Log($"Adding Flow({type}) is canceled");
                 return;
         }
         flows[newStructId] = newFlow;
-        Debug.Log("Adding Flow is accomplished!");
     }
 
     public void DeleteFlow(Flow targetFlow)
     {
-        ReturnStructId(targetFlow.StructId);
+        ReturnStructId(targetFlow.Data.StructId);
         Destroy(targetFlow.gameObject);
     }
 
     void ToSelectSkill(Flow flow)
     {
+
         selectSkillUI.Open(flow);
         addFlowUI.Close();
     }

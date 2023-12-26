@@ -26,4 +26,9 @@ public class SkillManager : MonoBehaviour
     {
         return skills.SingleOrDefault(skill => skill.SkillKind == skillKind);
     }
+
+    public SkillKind GetSkillKind(string skillName)
+    {
+        return (SkillKind)Enum.Parse(typeof(SkillKind), skillName);
+    }
 }

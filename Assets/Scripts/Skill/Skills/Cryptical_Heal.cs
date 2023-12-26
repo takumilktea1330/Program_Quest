@@ -10,7 +10,6 @@ public class Cryptical_Heal : AbstractSkill
         get { return SkillManager.SkillKind.Cryptical_Heal; }
     }
 
-    // スキル「ライトニング」の実行
     public override void Execute(BattleUnit source, BattleUnit target)
     {
         Debug.Log("Lightning!");
