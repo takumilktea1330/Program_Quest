@@ -35,13 +35,19 @@ public class Chart : MonoBehaviour
 
     public void AddFlow(string type) //add flow to the chart
     {
-        int newStructId = GenStructId(); // get struct id
-
-        if(newStructId == -1) // non-unique struct id exception
+        Debug.Log("anoinaoi");
+        int newStructId; // get struct id
+        try
         {
+            newStructId = GenStructId();
+        }
+        catch(Exception)
+        {// non-unique struct id exception
+
             Debug.Log($"Ovewflow Exception: Adding Flow({type}) is canceled");
             return;
         }
+
 
         Flow newFlow;
         GameObject newFlowObject;
@@ -63,7 +69,7 @@ public class Chart : MonoBehaviour
                 newFlow.SetCondition();
                 break;
             default:
-                Debug.Log($"Argument Exception occured at AddFlow() in Chart.cs\n" + "Adding Flow({type}) is canceled");
+                Debug.Log("Argument Exception occured at AddFlow() in Chart.cs\n" + $"Adding Flow({type}) is canceled");
                 ReturnStructId(newStructId);
                 return;
         }
@@ -99,8 +105,7 @@ public class Chart : MonoBehaviour
     {
         if(unusedIds.Count == 0)
         {
-            Debug.Log("cannot allocate unique id due to overflow");
-            return -1;
+            throw new Exception();
         }
         int newId = unusedIds[0];
         unusedIds.RemoveAt(0);

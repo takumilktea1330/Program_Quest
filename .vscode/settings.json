@@ -53,5 +53,5 @@
         "Temp/": true
     },
     "dotnet.preferCSharpExtension": true,
-    "dotnet.defaultSolution": "Program_Quest.sln"
+    "dotnet.defaultSolution": "program-quest.sln"
 }
