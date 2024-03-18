@@ -10,6 +10,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class SelectSkillUI : MonoBehaviour
 {
     List<SkillManager.SkillKind> SkillList;
+    [SerializeField] SkillManager skillManager;
     List<GameObject> Buttons;
     [SerializeField] GameObject content;
     AsyncOperationHandle<GameObject> SkillButtonPrefabHandle;
@@ -21,31 +22,32 @@ public class SelectSkillUI : MonoBehaviour
     {
         Buttons = new();
         SkillList = new();
-        StartCoroutine(Load());
+        Load();
         Close();
-        Test();
     }
 
-    private IEnumerator Load()
+    private void Load()
     {
-        SkillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
-        yield return SkillButtonPrefabHandle;
-        yield break;
-    }
-    
-    private void Test()
-    {
-        SkillList.Add(SkillManager.SkillKind.Patel_Crystalify);
-        SkillList.Add(SkillManager.SkillKind.Felyca_Defense);
-        SkillList.Add(SkillManager.SkillKind.Cryptical_Heal);
+        Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab").Completed += handle =>
+        {
+            SkillButtonPrefabHandle = handle;
+        };
     }
 
     public void Open(Flow targetFlow)
     {
-        targetFlow.ShowData();
-        if (targetFlow == null) return; 
+        try
+        {
+            targetFlow.ShowData(); //to debug
+        }
+        catch
+        {
+            throw new System.Exception();
+        }
         this.targetFlow = targetFlow;
         gameObject.SetActive(true);
+        SkillList = skillManager.GetSkillList();
+
         foreach(SkillManager.SkillKind skillKind in SkillList)
         {
             GameObject newSkillButton = Instantiate(SkillButtonPrefabHandle.Result, Vector3.zero, quaternion.identity);

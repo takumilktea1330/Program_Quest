@@ -31,4 +31,9 @@ public class SkillManager : MonoBehaviour
     {
         return (SkillKind)Enum.Parse(typeof(SkillKind), skillName);
     }
+
+    public List<SkillKind> GetSkillList()
+    {
+        return Enum.GetValues(typeof(SkillKind)).Cast<SkillKind>().ToList();
+    }
 }

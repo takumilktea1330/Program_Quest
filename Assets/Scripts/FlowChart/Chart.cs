@@ -35,7 +35,6 @@ public class Chart : MonoBehaviour
 
     public void AddFlow(string type) //add flow to the chart
     {
-        Debug.Log("anoinaoi");
         int newStructId; // get struct id
         try
         {
@@ -58,8 +57,9 @@ public class Chart : MonoBehaviour
                 newFlowObject = Instantiate(skillFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
                 newFlow = newFlowObject.GetComponent<Flow>();
                 newFlow.Init(newStructId, type);
-                newFlow.OnSelectSkill += ToSelectSkill;
-                newFlow.SelectSkill();
+                //newFlow.OnSelectSkill += ToSelectSkill;
+                //newFlow.SelectSkill();
+                ToSelectSkill(newFlow);
                 break;
             case "if":
                 Debug.Log("Begin to add if flow");
@@ -84,7 +84,6 @@ public class Chart : MonoBehaviour
 
     void ToSelectSkill(Flow flow)
     {
-
         selectSkillUI.Open(flow);
         addFlowUI.Close();
     }
