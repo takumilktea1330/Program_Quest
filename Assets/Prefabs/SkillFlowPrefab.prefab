@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5332561419774554097}
   - component: {fileID: 6524451336559949361}
   - component: {fileID: 8015061659922084076}
-  - component: {fileID: 3602971450127278334}
+  - component: {fileID: 1930346932025537827}
   m_Layer: 0
   m_Name: SkillFlowPrefab
   m_TagString: Untagged
@@ -113,7 +113,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 30, y: 15}
   m_EdgeRadius: 0
---- !u!114 &3602971450127278334
+--- !u!114 &1930346932025537827
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,9 +122,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 602448855800564342}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6a12c4574c3340099fab8880f6daa69, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e1259d99a29f422382471659c590e97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Data:
+    Type: 
+    StructId: 0
+    NextId1: 0
+    NextId2: 0
+    PosX: 0
+    PosY: 0
+    SkillName: 
+    CondFormula: 
 --- !u!1 &5452822724286586611
 GameObject:
   m_ObjectHideFlags: 0

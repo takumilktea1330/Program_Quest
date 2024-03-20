@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7896272814221201873}
   - component: {fileID: 855404805963111005}
   - component: {fileID: 5356106776829301310}
-  - component: {fileID: 2325208123669856031}
+  - component: {fileID: -3360074047586932343}
   m_Layer: 0
   m_Name: IfFlowPrefab
   m_TagString: Untagged
@@ -113,7 +113,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 30, y: 15}
   m_EdgeRadius: 0
---- !u!114 &2325208123669856031
+--- !u!114 &-3360074047586932343
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,9 +122,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 65523730237459585}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6a12c4574c3340099fab8880f6daa69, type: 3}
+  m_Script: {fileID: 11500000, guid: e2f061d965bc44ff9b40bd8d2819a1a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Data:
+    Type: 
+    StructId: 0
+    NextId1: 0
+    NextId2: 0
+    PosX: 0
+    PosY: 0
+    SkillName: 
+    CondFormula: 
 --- !u!1 &2148305475267039098
 GameObject:
   m_ObjectHideFlags: 0
