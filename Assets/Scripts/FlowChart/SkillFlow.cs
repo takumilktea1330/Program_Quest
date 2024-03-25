@@ -21,5 +21,6 @@ public class SkillFlow : Flow
         obj.transform.SetParent(canvas.transform);
 
         selectSkillUI = obj.GetComponent<SelectSkillUI>();
+        selectSkillUI.Open(this);
     }
 }
