@@ -12,7 +12,7 @@ public class SelectSkillUI : MonoBehaviour
     List<SkillManager.SkillKind> SkillList;
     [SerializeField] SkillManager skillManager;
     List<GameObject> Buttons;
-    [SerializeField] GameObject content;
+    GameObject content;
     AsyncOperationHandle<GameObject> SkillButtonPrefabHandle;
     Flow targetFlow;
 
@@ -36,6 +36,8 @@ public class SelectSkillUI : MonoBehaviour
 
     public void Open(Flow targetFlow)
     {
+        content = transform.Find("Viewport/Content").gameObject;
+        skillManager = GameObject.Find("SkillManager").GetComponent<SkillManager>();
         try
         {
             targetFlow.ShowData(); //to debug

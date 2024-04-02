@@ -419,6 +419,7 @@ GameObject:
   - component: {fileID: 4719622332575595888}
   - component: {fileID: 4719622332575595889}
   - component: {fileID: 4719622332575595854}
+  - component: {fileID: -7325103786261893346}
   m_Layer: 5
   m_Name: SelectSkillViewPrefab
   m_TagString: Untagged
@@ -516,3 +517,17 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-7325103786261893346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4719622332575595852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aed34df70d02c4a6bab6d3983c82d704, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillManager: {fileID: 0}
+  content: {fileID: 0}
