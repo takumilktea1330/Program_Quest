@@ -29,10 +29,6 @@ MonoBehaviour:
     m_Address: Prefabs/SkillButtonPrefab
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 0d824d521a53f42f299ce8540a9a4912
-    m_Address: Prefabs/SelectSkillViewPrefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 552f742dc413b4909bddd854fd952d7b, type: 2}
   m_SchemaSet:

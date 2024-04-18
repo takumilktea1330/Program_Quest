@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class SkillManager : MonoBehaviour
+public static class SkillManager
 {
     static readonly AbstractSkill[] skills =
     {
@@ -22,17 +22,17 @@ public class SkillManager : MonoBehaviour
     }
 
     // SkillKindを引数に、それに応じたスキルを返す
-    public AbstractSkill Create(SkillKind skillKind)
+    public static AbstractSkill Create(SkillKind skillKind)
     {
         return skills.SingleOrDefault(skill => skill.SkillKind == skillKind);
     }
 
-    public SkillKind GetSkillKind(string skillName)
+    public static SkillKind GetSkillKind(string skillName)
     {
         return (SkillKind)Enum.Parse(typeof(SkillKind), skillName);
     }
 
-    public List<SkillKind> GetSkillList()
+    public static List<SkillKind> GetSkillList()
     {
         return Enum.GetValues(typeof(SkillKind)).Cast<SkillKind>().ToList();
     }

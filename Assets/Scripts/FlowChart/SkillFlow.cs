@@ -6,21 +6,16 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SkillFlow : Flow
 {
-    SelectSkillUI selectSkillUI;
-    AsyncOperationHandle<GameObject> SelectSkillViewPrefabHandler;
-    GameObject SelectSkillViewPrefab;
-    public override void Init(int id, string type)
+    [SerializeField] SelectSkillUI selectSkillUI;
+    public override void Init(string id)
     {
-        base.Init(id, type);
+        base.Init(id);
+        Data.Type = "Skill";
+        SelectSkill();
     }
     public void SelectSkill()
     {
-        SelectSkillViewPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/SelectSkillViewPrefab");
-        SelectSkillViewPrefab = SelectSkillViewPrefabHandler.WaitForCompletion();
-        GameObject obj = Instantiate(SelectSkillViewPrefab, new Vector3(300, 250, 0), Quaternion.identity);
-        obj.transform.SetParent(canvas.transform);
-
-        selectSkillUI = obj.GetComponent<SelectSkillUI>();
+        selectSkillUI = canvas.transform.Find("SelectSkillView").GetComponent<SelectSkillUI>();
         selectSkillUI.Open(this);
     }
 }

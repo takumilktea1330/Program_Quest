@@ -10,49 +10,39 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class SelectSkillUI : MonoBehaviour
 {
     List<SkillManager.SkillKind> SkillList;
-    [SerializeField] SkillManager skillManager;
     List<GameObject> Buttons;
     GameObject content;
-    AsyncOperationHandle<GameObject> SkillButtonPrefabHandle;
+    AsyncOperationHandle<GameObject> _skillButtonPrefabHandle;
+    GameObject _skillButtonPrefab;
     Flow targetFlow;
 
     public UnityAction OnSettingSkillEnded;
     
     private void Start()
     {
-        Buttons = new();
-        SkillList = new();
-        Load();
+        Init();
         Close();
     }
-
-    private void Load()
+    private void Init()
     {
-        Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab").Completed += handle =>
-        {
-            SkillButtonPrefabHandle = handle;
-        };
+        Buttons = new();
+        SkillList = new();
+        _skillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
+        _skillButtonPrefab = _skillButtonPrefabHandle.WaitForCompletion();
+        Debug.Log("SelectSkillUI: Initialized!");
     }
 
     public void Open(Flow targetFlow)
     {
+        //Init();
         content = transform.Find("Viewport/Content").gameObject;
-        skillManager = GameObject.Find("SkillManager").GetComponent<SkillManager>();
-        try
-        {
-            targetFlow.ShowData(); //to debug
-        }
-        catch
-        {
-            throw new System.Exception();
-        }
         this.targetFlow = targetFlow;
         gameObject.SetActive(true);
-        SkillList = skillManager.GetSkillList();
+        SkillList = SkillManager.GetSkillList();
 
         foreach(SkillManager.SkillKind skillKind in SkillList)
         {
-            GameObject newSkillButton = Instantiate(SkillButtonPrefabHandle.Result, Vector3.zero, quaternion.identity);
+            GameObject newSkillButton = Instantiate(_skillButtonPrefabHandle.Result, Vector3.zero, quaternion.identity);
             Buttons.Add(newSkillButton);
             newSkillButton.transform.SetParent(content.transform, true); // contentの子にbuttonを追加
             Button button = newSkillButton.GetComponent<Button>();
@@ -68,7 +58,7 @@ public class SelectSkillUI : MonoBehaviour
     public void SetSkill(SkillManager.SkillKind skillKind)
     {
         targetFlow.Data.SkillName = skillKind.ToString();
-        OnSettingSkillEnded.Invoke();
+        Close();
     }
 
     public void Close()

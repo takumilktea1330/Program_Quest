@@ -21,15 +21,14 @@ public class Flow : MonoBehaviour
     /// </summary>
     /// <param name="id">newStructId(it must be unique)</param>
     /// <param name="type">"skill", "if" </param>
-    public virtual void Init(int id, string type)
+    public virtual void Init(string id)
     {
         Data = new()
         {
             StructId = id,
-            Type = type,
         };
         _camera = Camera.main;
-        canvas = GameObject.Find("Chart/MainCanvas");
+        canvas = GameObject.Find("MainCanvas");
         displayText = GetComponentInChildren<Text>();
     }
 
@@ -38,17 +37,11 @@ public class Flow : MonoBehaviour
         displayText.text = Data.SkillName;
     }
 
-    public virtual void OpenProperty()
-    {
-    }
-
     public virtual void ShowData()
     {
-        Debug.Log($"This is Flow(Struct ID: {Data.StructId}) Data\n" +
+        Debug.Log($"This is Flow(ID: {Data.StructId}) Data\n" +
         $"Position: {transform.position}");
     }
-
-
     private void OnMouseDrag()
     {
         transform.position = (Vector2)_camera.ScreenToWorldPoint(Input.mousePosition);
