@@ -6,7 +6,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SkillFlow : Flow
 {
-    [SerializeField] SelectSkillUI selectSkillUI;
+    SelectSkillUI selectSkillUI;
     public override void Init(string id)
     {
         base.Init(id);

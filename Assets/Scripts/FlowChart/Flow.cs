@@ -12,7 +12,6 @@ public class Flow : MonoBehaviour
 {
     public FlowData Data;
     Text displayText;
-    Camera _camera;
     protected GameObject canvas;
 
 
@@ -27,14 +26,14 @@ public class Flow : MonoBehaviour
         {
             StructId = id,
         };
-        _camera = Camera.main;
         canvas = GameObject.Find("MainCanvas");
-        displayText = GetComponentInChildren<Text>();
+        //displayText = GetComponentInChildren<Text>();
     }
 
-    public virtual void Display()
+    public virtual void Display(Skill skill)
     {
-        displayText.text = Data.SkillName;
+        //displayText.text = Data.SkillName;
+        gameObject.GetComponent<SpriteRenderer>().sprite = skill.DisplaySprite;
     }
 
     public virtual void ShowData()
@@ -42,9 +41,9 @@ public class Flow : MonoBehaviour
         Debug.Log($"This is Flow(ID: {Data.StructId}) Data\n" +
         $"Position: {transform.position}");
     }
-    private void OnMouseDrag()
-    {
-        transform.position = (Vector2)_camera.ScreenToWorldPoint(Input.mousePosition);
-    }
+    //private void OnMouseDrag()
+    //{
+    //    transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //}
 
 }

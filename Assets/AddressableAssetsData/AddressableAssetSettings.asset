@@ -84,6 +84,9 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - Skill
+    - Flow
+    - Prefab
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: a1d34194d0f7849d4b5272b7baed104a, type: 2}

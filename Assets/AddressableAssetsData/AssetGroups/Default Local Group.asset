@@ -20,15 +20,30 @@ MonoBehaviour:
   - m_GUID: a0cb76c89a5db476abd6d3bd7e47a421
     m_Address: Prefabs/SkillFlowPrefab
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Flow
+    - Prefab
   - m_GUID: 84cf1f21a78f94b6abe0196e3a5fb5d5
-    m_Address: Prefabs/IfFlowPrefab
+    m_Address: Prefabs/BranchFlowPrefab
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Flow
+    - Prefab
   - m_GUID: 0e2c019fa842549f2b541a9b77192145
     m_Address: Prefabs/SkillButtonPrefab
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: ac7ec5a0a72344aa29378aea84a93458
+    m_Address: Assets/Skills/Normal_Attack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Skill
+  - m_GUID: b6aeedaec0b554b95b5ca3f6a6738640
+    m_Address: Assets/Skills/Burning_Fire.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Skill
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 552f742dc413b4909bddd854fd952d7b, type: 2}
   m_SchemaSet:

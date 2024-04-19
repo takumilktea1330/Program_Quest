@@ -18,4 +18,9 @@ public static class SkillManager
         skills = handle.Result;
         yield break;
     }
+
+    public static Skill GetSkill(string name)
+    {
+        return skills.FirstOrDefault(skill => skill.ToString() == name);
+    }
 }

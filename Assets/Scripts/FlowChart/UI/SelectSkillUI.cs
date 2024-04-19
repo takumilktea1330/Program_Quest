@@ -13,28 +13,30 @@ public class SelectSkillUI : MonoBehaviour
     List<GameObject> Buttons;
     GameObject content;
     AsyncOperationHandle<GameObject> _skillButtonPrefabHandle;
-    GameObject _skillButtonPrefab;
     Flow targetFlow;
 
     public UnityAction OnSettingSkillEnded;
     
     private void Start()
     {
-        Init();
+        Buttons = new();
         Close();
     }
     private void Init()
     {
-        Buttons = new();
+        foreach (GameObject button in Buttons) Destroy(button);
+        Buttons.Clear();
+
+        targetFlow = null;
+        content = transform.Find("Viewport/Content").gameObject;
         _skillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
-        _skillButtonPrefab = _skillButtonPrefabHandle.WaitForCompletion();
+        _skillButtonPrefabHandle.WaitForCompletion();
         Debug.Log("SelectSkillUI: Initialized!");
     }
 
     public void Open(Flow targetFlow)
     {
-        //Init();
-        content = transform.Find("Viewport/Content").gameObject;
+        Init();
         this.targetFlow = targetFlow;
         gameObject.SetActive(true);
         skills = SkillManager.Skills;
@@ -55,16 +57,13 @@ public class SelectSkillUI : MonoBehaviour
     public void SetSkill(Skill skill)
     {
         targetFlow.Data.SkillName = skill.ToString();
-        targetFlow.Display();
+        targetFlow.Display(skill);
         Close();
     }
 
     public void Close()
     {
-        if (targetFlow != null) targetFlow.ShowData();
-        foreach (GameObject button in Buttons) Destroy(button);
-        Buttons.Clear();
-        targetFlow = null;
+        Init();
         gameObject.SetActive(false);
     }
 }
