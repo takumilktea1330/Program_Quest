@@ -17,6 +17,7 @@ public class FlowController : MonoBehaviour
     private void Start()
     {
         StartCoroutine(Load());
+        StartCoroutine(SkillManager.Init());
         flows = new();
     }
 

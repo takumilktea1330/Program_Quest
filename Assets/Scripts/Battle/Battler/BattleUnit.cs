@@ -14,9 +14,8 @@ public abstract class BattleUnit
     {
     }
 
-    public void ExecuteSkill(BattleUnit source, BattleUnit target, SkillManager.SkillKind skillKind)
+    public void ExecuteSkill(BattleUnit source, BattleUnit target, Skill skill)
     {
-        AbstractSkill skill = SkillManager.Create(skillKind);
         skill.Execute(source, target);
     }
 }

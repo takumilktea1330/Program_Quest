@@ -3,37 +3,19 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AddressableAssets;
 
 public static class SkillManager
 {
-    static readonly AbstractSkill[] skills =
-    {
-        new Patel_Crystalify(),
-        new Felyca_Defense(),
-        new Cryptical_Heal()
-    };
+    public static IList<Skill> Skills { get => skills; }
+    static IList<Skill> skills;
 
-    public enum SkillKind
+    public static IEnumerator Init()
     {
-        Patel_Crystalify,
-        Felyca_Defense,
-        Cryptical_Heal,
-    }
-
-    // SkillKindを引数に、それに応じたスキルを返す
-    public static AbstractSkill Create(SkillKind skillKind)
-    {
-        return skills.SingleOrDefault(skill => skill.SkillKind == skillKind);
-    }
-
-    public static SkillKind GetSkillKind(string skillName)
-    {
-        return (SkillKind)Enum.Parse(typeof(SkillKind), skillName);
-    }
-
-    public static List<SkillKind> GetSkillList()
-    {
-        return Enum.GetValues(typeof(SkillKind)).Cast<SkillKind>().ToList();
+        List<string> labels = new(){ "Skill" };
+        var handle = Addressables.LoadAssetsAsync<Skill>(labels, null, Addressables.MergeMode.Union);
+        yield return handle;
+        skills = handle.Result;
+        yield break;
     }
 }
