@@ -11,59 +11,40 @@ using UnityEngine.UI;
 public class Flow : MonoBehaviour
 {
     public FlowData Data;
-    public UnityAction<Flow> OnSelectSkill;
-    public UnityAction<Flow> OnOpenProperty;
-    public UnityAction<Flow> OnSetCondition;
     Text displayText;
     Camera _camera;
-    
+    protected GameObject canvas;
+
 
     /// <summary>
     /// initialize this flow
     /// </summary>
     /// <param name="id">newStructId(it must be unique)</param>
     /// <param name="type">"skill", "if" </param>
-    public void Init(int id, string type)
+    public virtual void Init(string id)
     {
         Data = new()
         {
             StructId = id,
-            Type = type,
-            FormulaType = 0
         };
         _camera = Camera.main;
+        canvas = GameObject.Find("MainCanvas");
         displayText = GetComponentInChildren<Text>();
     }
 
-    public void Display()
+    public virtual void Display()
     {
         displayText.text = Data.SkillName;
     }
 
-    public void OpenProperty()
+    public virtual void ShowData()
     {
-        OnOpenProperty.Invoke(this);
+        Debug.Log($"This is Flow(ID: {Data.StructId}) Data\n" +
+        $"Position: {transform.position}");
     }
-
-    public void SelectSkill()
-    {
-        OnSelectSkill.Invoke(this);
-    }
-
-    public void SetCondition()
-    {
-        OnSetCondition.Invoke(this);
-    }
-
     private void OnMouseDrag()
     {
         transform.position = (Vector2)_camera.ScreenToWorldPoint(Input.mousePosition);
     }
 
-    public void ShowData()
-    {
-        if(Data.Type == "skill")
-        Debug.Log($"This is Flow(Struct ID: {Data.StructId}) Data\n"+
-        $"Position: {transform.position}, Skill Name: {Data.SkillName}\n");
-    }
 }
