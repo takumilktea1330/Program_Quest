@@ -14,8 +14,10 @@ public class BranchFlow : Flow
     {
         //OnSetCondition.Invoke(this);
     }
-    public override void Connect(Flow flow, AsyncOperationHandle<GameObject> connectLinePrefabHandler)
+    public override void Connect(Flow flow)
     {
-        base.Connect(flow, connectLinePrefabHandler);
+        // NextかBranchのいずれかに接続します
+        // 実装予定
+        Debug.Log("BranchFlow Connect");
     }
 }

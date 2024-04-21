@@ -80,6 +80,21 @@ public class FlowController : MonoBehaviour
         Destroy(targetFlow.gameObject);
     }
 
+    public void DrowConnectLines()
+    {
+        foreach (Flow flow in flows)
+        {
+            flow.DrowConnectLine(_connectLinePrefabHandler);
+        }
+    }
+    public void DestroyConnectLines()
+    {
+        foreach (Flow flow in flows)
+        {
+            flow.DestroyConnectLine();
+        }
+    }
+
     void ViewModeHandler()
     {
         if (Input.GetMouseButton(0))
@@ -90,13 +105,10 @@ public class FlowController : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
+                    DestroyConnectLines();
                     selectedFlow = hit.collider.GetComponent<Flow>();
                     selectedFlow.ShowData();
                     uiController.OpenPropertyWindow(selectedFlow);
-                }
-                else if (Input.GetMouseButtonUp(0))
-                {
-                    selectedFlow = null;
                 }
                 else
                 {
@@ -115,6 +127,11 @@ public class FlowController : MonoBehaviour
                 selectedFlow = null;
                 uiController.ClosePropertyWindow();
             }
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            selectedFlow = null;
+            DrowConnectLines();
         }
     }
     void ConnectModeHandler()
@@ -142,11 +159,12 @@ public class FlowController : MonoBehaviour
                     }
                     else
                     {
-                        selectedFlow.Connect(targetFlow, _connectLinePrefabHandler);
+                        selectedFlow.Connect(targetFlow);
                         Debug.Log($"Connected {selectedFlow.Data.ID} -> {targetFlow.Data.ID}");
                     }
                     Debug.Log("End connection");
                     StopCoroutine(blinkCoroutine);
+                    DrowConnectLines();
                     selectedFlow.gameObject.GetComponent<SpriteRenderer>().color = Color.white; //元の色に戻す
                     selectedFlow = null;
                     return;

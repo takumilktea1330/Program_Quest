@@ -15,7 +15,9 @@ public class Flow : MonoBehaviour
     public FlowData Data;
     protected GameObject canvas; 
     //PropertyWindow propertyWindow;
-    protected LineRenderer line;
+    protected LineRenderer line = null;
+    protected Flow Next;
+
     Color blinkColor;
 
     public virtual void Init(string id)
@@ -40,7 +42,7 @@ public class Flow : MonoBehaviour
         $"Position: {transform.position}");
     }
 
-    public virtual void Connect(Flow flow, AsyncOperationHandle<GameObject> connectLinePrefabHandler)
+    public virtual void Connect(Flow flow)
     {
         
     }
@@ -55,5 +57,15 @@ public class Flow : MonoBehaviour
             spriteRenderer.color = Color.white;
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    public virtual void DrowConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
+    {
+        Debug.Log("Flow DrowConnectLine");
+    }
+
+    public void DestroyConnectLine()
+    {
+        Destroy(line);
     }
 }
