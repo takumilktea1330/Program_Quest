@@ -11,54 +11,22 @@ public class FlowController : MonoBehaviour
 {
     AsyncOperationHandle<GameObject> _skillFlowPrefabHandler;
     AsyncOperationHandle<GameObject> _branchFlowPrefabHandler;
-    Dropdown modeDropdown;
+    [SerializeField] UIController uiController;
     List<Flow> flows; // this list control flows existing in this chart
     Flow selectedFlow; // this is the flow selected by user
+    string startFlowID;
 
-    public enum State
+    private IEnumerator Start()
     {
-        View,
-        Move,
-        Connection,
-    }
-
-    private void Start()
-    {
-        StartCoroutine(Load());
-        StartCoroutine(SkillManager.Init());
-        modeDropdown = GameObject.Find("ModeDropdown").GetComponent<Dropdown>();
-        state = State.View;
+        yield return Load();
+        yield return SkillManager.Init();
+        uiController.ToViewMode();
         flows = new();
+        startFlowID = CreateStartFlow();
+        yield break;
     }
 
-    public State state;
-    public void ModeChange()
-    {
-        switch (modeDropdown.value)
-        {
-            case 0:
-                ToViewMode();
-                break;
-            case 1:
-                ToMoveMode();
-                break;
-            case 2:
-                ToConnectMode();
-                break;
-        }
-    }
-    public void ToViewMode()
-    {
-        state = State.View;
-    }
-    public void ToMoveMode()
-    {
-        state = State.Move;
-    }
-    public void ToConnectMode()
-    {
-        state = State.Connection;
-    }
+
 
     // load flow prefabs from Assets/Prefabs
     private IEnumerator Load()
@@ -68,6 +36,16 @@ public class FlowController : MonoBehaviour
         _branchFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/BranchFlowPrefab");
         yield return _branchFlowPrefabHandler;
         yield break;
+    }
+
+    public string CreateStartFlow()
+    {
+        string newStructId = Guid.NewGuid().ToString("N"); // get struct id
+        GameObject newFlowObject = Instantiate(_skillFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
+        Flow newFlow = newFlowObject.GetComponent<Flow>();
+        newFlow.Init(newStructId);
+        flows.Add(newFlow);
+        return newStructId;
     }
 
     public void CreateSkillFlow()
@@ -94,31 +72,68 @@ public class FlowController : MonoBehaviour
         Destroy(targetFlow.gameObject);
     }
 
-    private void Update()
+    void ViewModeHandler()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        if (Input.GetMouseButton(0))
         {
-            if (state == State.Move)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                selectedFlow = hit.collider.GetComponent<Flow>();
+                uiController.OpenPropertyWindow(selectedFlow);
+            }
+            else
+            {
+                selectedFlow = null;
+                uiController.ClosePropertyWindow();
+            }
+        }
+    }
+
+    void MoveModeHandler()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     selectedFlow = hit.collider.GetComponent<Flow>();
                     selectedFlow.ShowData();
                 }
-                if (Input.GetMouseButton(0))
+                else if (Input.GetMouseButtonUp(0))
+                {
+                    selectedFlow = null;
+                }
+                else
                 {
                     if (selectedFlow != null)
                     {
                         selectedFlow.transform.position = hit.point;
                     }
                 }
-                if (Input.GetMouseButtonUp(0))
-                {
-                    selectedFlow = null;
-                }
             }
+        }
+    }
+    void ConnectionModeHandler()
+    {
+
+    }
+
+    private void Update()
+    {
+        switch (ChartMode.CurrentState)
+        {
+            case ChartMode.State.View:
+                ViewModeHandler();
+                MoveModeHandler(); 
+                break;
+            case ChartMode.State.Connection:
+                ConnectionModeHandler();
+                break;
         }
     }
 }

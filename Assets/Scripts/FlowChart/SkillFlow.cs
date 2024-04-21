@@ -11,11 +11,15 @@ public class SkillFlow : Flow
     {
         base.Init(id);
         Data.Type = "Skill";
+        selectSkillUI = canvas.transform.Find("SelectSkillView").GetComponent<SelectSkillUI>();
         SelectSkill();
+    }
+    public override void Display()
+    {
+        gameObject.GetComponent<SpriteRenderer>().sprite = SkillManager.GetSkill(Data.SkillName).DisplaySprite;
     }
     public void SelectSkill()
     {
-        selectSkillUI = canvas.transform.Find("SelectSkillView").GetComponent<SelectSkillUI>();
         selectSkillUI.Open(this);
     }
 }

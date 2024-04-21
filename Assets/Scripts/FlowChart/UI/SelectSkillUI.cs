@@ -10,18 +10,12 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class SelectSkillUI : MonoBehaviour
 {
     IList<Skill> skills;
-    List<GameObject> Buttons;
+    List<GameObject> Buttons = new();
     GameObject content;
     AsyncOperationHandle<GameObject> _skillButtonPrefabHandle;
+    UIController uiController;
     Flow targetFlow;
-
-    public UnityAction OnSettingSkillEnded;
     
-    private void Start()
-    {
-        Buttons = new();
-        Close();
-    }
     private void Init()
     {
         foreach (GameObject button in Buttons) Destroy(button);
@@ -29,14 +23,21 @@ public class SelectSkillUI : MonoBehaviour
 
         targetFlow = null;
         content = transform.Find("Viewport/Content").gameObject;
+        uiController = transform.parent.GetComponent<UIController>();
         _skillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
         _skillButtonPrefabHandle.WaitForCompletion();
         Debug.Log("SelectSkillUI: Initialized!");
     }
 
+    private void Start()
+    {
+        Close();
+    }
+
     public void Open(Flow targetFlow)
     {
-        Init();
+        gameObject.SetActive(true);
+        uiController.ToProcessingMode("Select Skill");
         this.targetFlow = targetFlow;
         gameObject.SetActive(true);
         skills = SkillManager.Skills;
@@ -54,16 +55,18 @@ public class SelectSkillUI : MonoBehaviour
         }
     }
 
-    public void SetSkill(Skill skill)
+    void SetSkill(Skill skill)
     {
         targetFlow.Data.SkillName = skill.ToString();
-        targetFlow.Display(skill);
+        targetFlow.Display();
+        uiController.ToViewMode();
         Close();
     }
 
-    public void Close()
+    void Close()
     {
         Init();
         gameObject.SetActive(false);
+        uiController.ToViewMode();
     }
 }

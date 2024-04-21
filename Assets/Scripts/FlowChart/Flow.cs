@@ -11,15 +11,9 @@ using UnityEngine.UI;
 public class Flow : MonoBehaviour
 {
     public FlowData Data;
-    Text displayText;
-    protected GameObject canvas;
+    protected GameObject canvas; 
+    PropertyWindow propertyWindow;
 
-
-    /// <summary>
-    /// initialize this flow
-    /// </summary>
-    /// <param name="id">newStructId(it must be unique)</param>
-    /// <param name="type">"skill", "if" </param>
     public virtual void Init(string id)
     {
         Data = new()
@@ -27,13 +21,11 @@ public class Flow : MonoBehaviour
             StructId = id,
         };
         canvas = GameObject.Find("MainCanvas");
-        //displayText = GetComponentInChildren<Text>();
+        propertyWindow = canvas.transform.Find("PropertyWindow").GetComponent<PropertyWindow>();
     }
 
-    public virtual void Display(Skill skill)
+    public virtual void Display()
     {
-        //displayText.text = Data.SkillName;
-        gameObject.GetComponent<SpriteRenderer>().sprite = skill.DisplaySprite;
     }
 
     public virtual void ShowData()
@@ -41,9 +33,4 @@ public class Flow : MonoBehaviour
         Debug.Log($"This is Flow(ID: {Data.StructId}) Data\n" +
         $"Position: {transform.position}");
     }
-    //private void OnMouseDrag()
-    //{
-    //    transform.position = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    //}
-
 }
