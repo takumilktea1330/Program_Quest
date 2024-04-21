@@ -48,6 +48,10 @@ MonoBehaviour:
     m_Address: Prefabs/StartFlowPrefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: ec62a07de37564a7da26fa366e76d509
+    m_Address: Prefabs/ConnectLinePrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 552f742dc413b4909bddd854fd952d7b, type: 2}
   m_SchemaSet:

@@ -5,9 +5,9 @@
 public class FlowData
 {
     public string Type;
-    public string StructId;
-    public int NextId1;// skill->next, ifflow(true)
-    public int NextId2;// is used only ifflow(false)
+    public string ID;
+    public string Next;// skill->next, ifflow(true)
+    public string Branch;// is used only ifflow(false)
 
     public int PosX;
     public int PosY;

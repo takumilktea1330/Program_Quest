@@ -22,4 +22,11 @@ public class SkillFlow : Flow
     {
         selectSkillUI.Open(this);
     }
+    public override void Connect(Flow target, AsyncOperationHandle<GameObject> connectLinePrefabHandler)
+    {
+        GameObject connectLine = Instantiate(connectLinePrefabHandler.Result, canvas.transform);
+        line = connectLine.GetComponent<LineRenderer>();
+        line.SetPosition(0, transform.position);
+        line.SetPosition(1, target.transform.position);
+    }
 }

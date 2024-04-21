@@ -101,9 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Data:
     Type: 
-    StructId: 0
-    NextId1: 0
-    NextId2: 0
+    ID: 
+    Next: 
+    Branch: 
     PosX: 0
     PosY: 0
     SkillName: 
@@ -119,7 +119,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 2, z: 0}
+  m_Size: {x: 3, y: 1.5, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2148305475267039098
 GameObject:

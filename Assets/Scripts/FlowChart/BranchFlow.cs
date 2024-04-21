@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BranchFlow : Flow
 {
@@ -12,5 +13,9 @@ public class BranchFlow : Flow
     public void SetCondition()
     {
         //OnSetCondition.Invoke(this);
+    }
+    public override void Connect(Flow flow, AsyncOperationHandle<GameObject> connectLinePrefabHandler)
+    {
+        base.Connect(flow, connectLinePrefabHandler);
     }
 }
