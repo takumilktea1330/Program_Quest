@@ -105,7 +105,6 @@ public class FlowController : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    DestroyConnectLines();
                     selectedFlow = hit.collider.GetComponent<Flow>();
                     selectedFlow.ShowData();
                     uiController.OpenPropertyWindow(selectedFlow);
@@ -118,6 +117,8 @@ public class FlowController : MonoBehaviour
                         if(Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
                             selectedFlow.transform.position = hit.point;
+                            DestroyConnectLines();
+                            DrowConnectLines();
                         }
                     }
                 }
