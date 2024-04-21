@@ -12,6 +12,7 @@ public class ToEditScene : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     Text text;
     Color normalColor;
     Color pressedColor = Color.gray;
+    [SerializeField] LoadingScreen loadingScreen;
 
     public bool IsClicked { get => isClicked; set => isClicked = value; }
     void Awake()
@@ -46,7 +47,7 @@ public class ToEditScene : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             return;
         }
         isClicked = true;
-        SceneManager.LoadScene("EditScene");
+        loadingScreen.LoadNextScene("EditScene");
     }
     void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
     {

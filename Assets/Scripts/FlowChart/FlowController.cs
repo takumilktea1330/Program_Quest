@@ -11,6 +11,7 @@ public class FlowController : MonoBehaviour
 {
     AsyncOperationHandle<GameObject> _skillFlowPrefabHandler;
     AsyncOperationHandle<GameObject> _branchFlowPrefabHandler;
+    AsyncOperationHandle<GameObject> _startFlowPrefabHandler;
     [SerializeField] UIController uiController;
     List<Flow> flows; // this list control flows existing in this chart
     Flow selectedFlow; // this is the flow selected by user
@@ -31,6 +32,8 @@ public class FlowController : MonoBehaviour
     // load flow prefabs from Assets/Prefabs
     private IEnumerator Load()
     {
+        _startFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/StartFlowPrefab");
+        yield return _startFlowPrefabHandler;
         _skillFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillFlowPrefab");
         yield return _skillFlowPrefabHandler;
         _branchFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/BranchFlowPrefab");
@@ -38,10 +41,10 @@ public class FlowController : MonoBehaviour
         yield break;
     }
 
-    public string CreateStartFlow()
+    private string CreateStartFlow()
     {
         string newStructId = Guid.NewGuid().ToString("N"); // get struct id
-        GameObject newFlowObject = Instantiate(_skillFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
+        GameObject newFlowObject = Instantiate(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0), Quaternion.identity);
         Flow newFlow = newFlowObject.GetComponent<Flow>();
         newFlow.Init(newStructId);
         flows.Add(newFlow);
