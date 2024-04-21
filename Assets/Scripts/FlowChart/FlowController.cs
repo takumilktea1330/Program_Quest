@@ -117,8 +117,8 @@ public class FlowController : MonoBehaviour
                         if(Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
                             selectedFlow.transform.position = hit.point;
-                            DestroyConnectLines();
-                            DrowConnectLines();
+                            DestroyConnectLines(); //もっと最適化できそう
+                            DrowConnectLines(); //もっと最適化できそう
                         }
                     }
                 }
@@ -164,7 +164,7 @@ public class FlowController : MonoBehaviour
                         Debug.Log($"Connected {selectedFlow.Data.ID} -> {targetFlow.Data.ID}");
                     }
                     Debug.Log("End connection");
-                    StopCoroutine(blinkCoroutine);
+                    if(blinkCoroutine != null)StopCoroutine(blinkCoroutine);
                     DrowConnectLines();
                     selectedFlow.gameObject.GetComponent<SpriteRenderer>().color = Color.white; //元の色に戻す
                     selectedFlow = null;
@@ -185,7 +185,7 @@ public class FlowController : MonoBehaviour
                 {
                     Debug.Log("Cancel connection");
                     // 接続元以外をクリックした場合は選択を解除
-                    StopCoroutine(blinkCoroutine);
+                    if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
                     selectedFlow.gameObject.GetComponent<SpriteRenderer>().color = Color.white; //元の色に戻す
                     selectedFlow = null;
                 }
