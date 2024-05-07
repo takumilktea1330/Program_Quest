@@ -8,10 +8,12 @@ public class UIController : MonoBehaviour
     GameObject CreateFlowPanel;
     Dropdown ModeDropdown;
     PropertyWindow propertyWindow;
+    MessageUI messageUI;
     private void Awake() {
         CreateFlowPanel = transform.Find("CreateFlowPanel").gameObject;
         ModeDropdown = transform.Find("ModeDropdown").gameObject.GetComponent<Dropdown>();
         propertyWindow = transform.Find("PropertyWindow").gameObject.GetComponent<PropertyWindow>();
+        messageUI = transform.Find("MessageUI").gameObject.GetComponent<MessageUI>();
     }
     public void ToViewMode()
     {
@@ -26,13 +28,16 @@ public class UIController : MonoBehaviour
         CreateFlowPanel.SetActive(false);
         ClosePropertyWindow();
     }
-    public void ToProcessingMode(string message = null)
+    public void ToProcessingMode()
     {
         ChartMode.CurrentState = ChartMode.State.Processing;
-        Debug.Log("Processing...: " + message);
         ModeDropdown.gameObject.SetActive(false);
         CreateFlowPanel.SetActive(false);
         ClosePropertyWindow();
+    }
+    public void ShowMessage(string title, string message)
+    {
+        messageUI.Show(title, message);
     }
     public void OpenPropertyWindow(Flow targetFlow)
     {

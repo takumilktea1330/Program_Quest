@@ -1,12 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
-using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 
@@ -59,9 +52,9 @@ public class Flow : MonoBehaviour
         }
     }
 
-    public virtual void DrowConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
+    public virtual void DrawConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
     {
-        Debug.Log("Flow DrowConnectLine");
+        Debug.Log("Flow DrawConnectLine");
     }
 
     public void DestroyConnectLine()

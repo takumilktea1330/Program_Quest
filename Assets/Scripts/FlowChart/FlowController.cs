@@ -1,12 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.UI;
 
 public class FlowController : MonoBehaviour
 {
@@ -15,18 +12,17 @@ public class FlowController : MonoBehaviour
     AsyncOperationHandle<GameObject> _startFlowPrefabHandler;
     AsyncOperationHandle<GameObject> _connectLinePrefabHandler;
     [SerializeField] UIController uiController;
-    List<Flow> flows; // this list control flows existing in this chart
-    Flow selectedFlow; // this is the flow selected by user
+    Flow selectedFlow; // a flow selected by user
     IEnumerator blinkCoroutine;
-    string startFlowID;
 
     private IEnumerator Start()
     {
         yield return Load();
         yield return SkillManager.Init();
         uiController.ToViewMode();
-        flows = new();
-        startFlowID = CreateStartFlow();
+        ChartData.Flows = new List<Flow>();
+        ChartData.StartFlowID = CreateStartFlow();
+
         yield break;
     }
 
@@ -46,13 +42,14 @@ public class FlowController : MonoBehaviour
         yield break;
     }
 
+
     private string CreateStartFlow()
     {
         string newStructId = Guid.NewGuid().ToString("N"); // get struct id
         GameObject newFlowObject = Instantiate(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0), Quaternion.identity);
         Flow newFlow = newFlowObject.GetComponent<Flow>();
         newFlow.Init(newStructId);
-        flows.Add(newFlow);
+        ChartData.Flows.Add(newFlow);
         return newStructId;
     }
 
@@ -62,7 +59,7 @@ public class FlowController : MonoBehaviour
         GameObject newFlowObject = Instantiate(_skillFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
         SkillFlow newFlow = newFlowObject.GetComponent<SkillFlow>();
         newFlow.Init(newStructId);
-        flows.Add(newFlow);
+        ChartData.Flows.Add(newFlow);
     }
 
     public void CreateBranchFlow()
@@ -71,27 +68,20 @@ public class FlowController : MonoBehaviour
         GameObject newFlowObject = Instantiate(_branchFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
         BranchFlow newFlow = newFlowObject.GetComponent<BranchFlow>();
         newFlow.Init(newStructId);
-        flows.Add(newFlow);
+        ChartData.Flows.Add(newFlow);
     }
 
     public void DeleteFlow(Flow targetFlow)
     {
-        flows.Remove(targetFlow);
+        ChartData.Flows.Remove(targetFlow);
         Destroy(targetFlow.gameObject);
     }
 
-    public void DrowConnectLines()
+    public void DrawConnectLines()
     {
-        foreach (Flow flow in flows)
+        foreach (Flow flow in ChartData.Flows)
         {
-            flow.DrowConnectLine(_connectLinePrefabHandler);
-        }
-    }
-    public void DestroyConnectLines()
-    {
-        foreach (Flow flow in flows)
-        {
-            flow.DestroyConnectLine();
+            flow.DrawConnectLine(_connectLinePrefabHandler);
         }
     }
 
@@ -117,8 +107,8 @@ public class FlowController : MonoBehaviour
                         if(Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
                             selectedFlow.transform.position = hit.point;
-                            DestroyConnectLines(); //もっと最適化できそう
-                            DrowConnectLines(); //もっと最適化できそう
+                            //DestroyConnectLines(); //最適化できそう
+                            DrawConnectLines(); //最適化できそう
                         }
                     }
                 }
@@ -132,7 +122,8 @@ public class FlowController : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             selectedFlow = null;
-            DrowConnectLines();
+            //DestroyConnectLines();
+            DrawConnectLines();
         }
     }
     void ConnectModeHandler()
@@ -152,6 +143,7 @@ public class FlowController : MonoBehaviour
                     if (targetFlow is StartFlow)
                     {
                         Debug.Log("Cannot connect to StartFlow");
+
                     }
                     // 接続先が自分自身の場合は接続できない
                     else if(selectedFlow == targetFlow)
@@ -165,7 +157,7 @@ public class FlowController : MonoBehaviour
                     }
                     Debug.Log("End connection");
                     if(blinkCoroutine != null)StopCoroutine(blinkCoroutine);
-                    DrowConnectLines();
+                    DrawConnectLines();
                     selectedFlow.gameObject.GetComponent<SpriteRenderer>().color = Color.white; //元の色に戻す
                     selectedFlow = null;
                     return;

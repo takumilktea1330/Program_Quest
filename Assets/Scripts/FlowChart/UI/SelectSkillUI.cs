@@ -9,7 +9,6 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SelectSkillUI : MonoBehaviour
 {
-    IList<Skill> skills;
     List<GameObject> Buttons = new();
     GameObject content;
     AsyncOperationHandle<GameObject> _skillButtonPrefabHandle;
@@ -18,8 +17,8 @@ public class SelectSkillUI : MonoBehaviour
     
     private void Init()
     {
-        foreach (GameObject button in Buttons) Destroy(button);
-        Buttons.Clear();
+        //foreach (GameObject button in Buttons) Destroy(button);
+        //Buttons.Clear();
 
         targetFlow = null;
         content = transform.Find("Viewport/Content").gameObject;
@@ -36,13 +35,12 @@ public class SelectSkillUI : MonoBehaviour
 
     public void Open(Flow targetFlow)
     {
+        Init();
         gameObject.SetActive(true);
-        uiController.ToProcessingMode("Select Skill");
+        uiController.ToProcessingMode();
         this.targetFlow = targetFlow;
-        gameObject.SetActive(true);
-        skills = SkillManager.Skills;
 
-        foreach(Skill skill in skills)
+        foreach(Skill skill in SkillManager.Skills)
         {
             GameObject newSkillButton = Instantiate(_skillButtonPrefabHandle.Result, Vector3.zero, quaternion.identity);
             Buttons.Add(newSkillButton);
@@ -65,7 +63,6 @@ public class SelectSkillUI : MonoBehaviour
 
     void Close()
     {
-        Init();
         gameObject.SetActive(false);
         uiController.ToViewMode();
     }

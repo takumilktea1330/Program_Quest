@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1186497512403694707}
   - component: {fileID: 8491705501944936754}
   m_Layer: 0
-  m_Name: ConnectLine
+  m_Name: ConnectLinePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

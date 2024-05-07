@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SkillFlow : Flow
@@ -12,6 +9,7 @@ public class SkillFlow : Flow
         base.Init(id);
         Data.Type = "Skill";
         selectSkillUI = canvas.transform.Find("SelectSkillView").GetComponent<SelectSkillUI>();
+        
         SelectSkill();
     }
     public override void Display()
@@ -27,10 +25,11 @@ public class SkillFlow : Flow
         Next = target;
         Data.Next = target.Data.ID;
     }
-    public override void DrowConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
+    public override void DrawConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
     {
-        Destroy(line);
-        if(Next == null) return;
+        if (line != null) Destroy(line.gameObject);
+        if (Next == null) return;
+        Debug.Log("SkillFlow: DrawConnectLine");
         line = Instantiate(_connectLinePrefabHandler.Result, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
         line.SetPosition(0, transform.position);
         line.SetPosition(1, Next.transform.position);
