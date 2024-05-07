@@ -13,12 +13,19 @@ public class Flow : MonoBehaviour
 
     Color blinkColor;
 
-    public virtual void Init(string id)
+    public virtual void Init(string id, bool isnew = true)
     {
-        Data = new()
+        if(isnew)
         {
-            ID = id,
-        };
+            Data = new()
+            {
+                ID = id,
+                Name = "New Flow",
+                Type = "Flow",
+                PosX = transform.position.x,
+                PosY = transform.position.y
+            };
+        }
         canvas = GameObject.Find("MainCanvas");
         //propertyWindow = canvas.transform.Find("PropertyWindow").GetComponent<PropertyWindow>();
         blinkColor = Color.white;
@@ -29,7 +36,7 @@ public class Flow : MonoBehaviour
 
     public virtual void ShowData()
     {
-        Debug.Log($"This is Flow(ID: {Data.ID}) Data\n" +
+        Debug.Log($"This is Flow( {Data.Name}) Data\n" +
         $"Position: {transform.position}");
     }
 

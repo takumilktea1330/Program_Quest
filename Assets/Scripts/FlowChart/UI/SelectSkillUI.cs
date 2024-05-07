@@ -36,7 +36,7 @@ public class SelectSkillUI : MonoBehaviour
             newSkillButton.transform.SetParent(content.transform, true); // contentの子にbuttonを追加
             Button button = newSkillButton.GetComponent<Button>();
             Text text = newSkillButton.GetComponentInChildren<Text>();
-            text.text = skill.ToString();
+            text.text = skill.Name;
 
             button.onClick.AddListener(() => SetSkill(skill)); // press button to set skill
         }
@@ -52,7 +52,7 @@ public class SelectSkillUI : MonoBehaviour
 
     void SetSkill(Skill skill)
     {
-        targetFlow.Data.Name = skill.ToString();
+        targetFlow.Data.Name = skill.Name;
         targetFlow.Display();
         uiController.ToViewMode();
         Close();

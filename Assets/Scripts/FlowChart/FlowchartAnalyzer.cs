@@ -14,12 +14,25 @@ public class FlowchartAnalyzer : MonoBehaviour
     {
         //beginnning at start flow
         Flow startFlow = ChartData.Flows.Find(flow => flow.Data.ID == ChartData.StartFlowID);
+        if(startFlow == null)
+        {
+            messageTitle.text = "Error";
+            messageText.text = "Start flow not found!";
+            return;
+        }
+        resultText.text = $"----- Beginning of flowchart -----\n";
+        messageTitle.text = "Processing...";
+        messageText.text = "Flowchart analysis in progress...";
         Analyze(startFlow.Next);
 
-        void Analyze(Flow currentFlow)
+
+        void Analyze(Flow currentFlow, int depth = 0)
         {
             if(currentFlow == null)
             {
+                resultText.text += "----- End of flowchart -----\n";
+                messageTitle.text = "Success";
+                messageText.text = "Flowchart analysis completed!";
                 return;
             }
             if (currentFlow is SkillFlow skillFlow)
@@ -30,8 +43,8 @@ public class FlowchartAnalyzer : MonoBehaviour
             else if (currentFlow is BranchFlow branchFlow)
             {
                 resultText.text += $"BranchFlow: {branchFlow.Data.Name}\n";
-                Analyze(branchFlow.Next);
-                Analyze(branchFlow.Branch);
+                Analyze(branchFlow.Next, depth+1);
+                Analyze(branchFlow.Branch, depth+1);
             }
             else
             {

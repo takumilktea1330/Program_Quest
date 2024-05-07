@@ -6,9 +6,9 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class BranchFlow : Flow
 {
     public Flow Branch { get; set; }
-    public override void Init(string id)
+    public override void Init(string id, bool isnew = true)
     {
-        base.Init(id);
+        base.Init(id, isnew);
         Data.Type = "Branch";
     }
     public void SetCondition()
