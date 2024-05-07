@@ -8,9 +8,7 @@ public class StartFlow : Flow
         base.Init(id);
         Data.Type = "Start";
     }
-    public override void Display()
-    {
-    }
+    public override void Display(){}
     public override void Connect(Flow target)
     {
         Next = target;

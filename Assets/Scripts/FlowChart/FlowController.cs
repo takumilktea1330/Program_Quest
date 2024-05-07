@@ -52,31 +52,27 @@ public class FlowController : MonoBehaviour
 
     private string CreateStartFlow()
     {
-        string newStructId = Guid.NewGuid().ToString("N"); // get struct id
-        GameObject newFlowObject = Instantiate(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0), Quaternion.identity);
-        Flow newFlow = newFlowObject.GetComponent<Flow>();
-        newFlow.Init(newStructId);
-        ChartData.Flows.Add(newFlow);
-        return newStructId;
+        return CreateFlow<Flow>(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0));
     }
 
     public void CreateSkillFlow()
     {
-        Debug.Log("CreateSkillFlow");
-        string newStructId = Guid.NewGuid().ToString("N"); // get struct id
-        GameObject newFlowObject = Instantiate(_skillFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
-        SkillFlow newFlow = newFlowObject.GetComponent<SkillFlow>();
-        newFlow.Init(newStructId);
-        ChartData.Flows.Add(newFlow);
+        CreateFlow<SkillFlow>(_skillFlowPrefabHandler.Result, new Vector3(0, 0, 0));
     }
 
     public void CreateBranchFlow()
     {
+        CreateFlow<BranchFlow>(_branchFlowPrefabHandler.Result, new Vector3(0, 0, 0));
+    }
+
+    private string CreateFlow<T>(GameObject prefab, Vector3 position) where T : Flow
+    {
         string newStructId = Guid.NewGuid().ToString("N"); // get struct id
-        GameObject newFlowObject = Instantiate(_branchFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
-        BranchFlow newFlow = newFlowObject.GetComponent<BranchFlow>();
+        GameObject newFlowObject = Instantiate(prefab, position, Quaternion.identity);
+        T newFlow = newFlowObject.GetComponent<T>();
         newFlow.Init(newStructId);
         ChartData.Flows.Add(newFlow);
+        return newStructId;
     }
 
     public void DeleteFlow(Flow targetFlow)
@@ -103,8 +99,7 @@ public class FlowController : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -117,7 +112,7 @@ public class FlowController : MonoBehaviour
                     if (selectedFlow != null)
                     {
                         // 細かすぎる動きには反応させない
-                        if(Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
+                        if (Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
                             selectedFlow.transform.position = hit.point;
                             DrawConnectLines();
@@ -125,7 +120,7 @@ public class FlowController : MonoBehaviour
                     }
                 }
             }
-            else if(Input.GetMouseButtonDown(0) && selectedFlow != null)
+            else if (Input.GetMouseButtonDown(0) && selectedFlow != null)
             {
                 selectedFlow = null;
                 uiController.ClosePropertyWindow();
@@ -134,7 +129,6 @@ public class FlowController : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             selectedFlow = null;
-            //DestroyConnectLines();
             DrawConnectLines();
         }
     }
