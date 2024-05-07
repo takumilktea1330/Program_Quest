@@ -14,7 +14,7 @@ public class SkillFlow : Flow
     }
     public override void Display()
     {
-        gameObject.GetComponent<SpriteRenderer>().sprite = SkillManager.GetSkill(Data.SkillName).DisplaySprite;
+        gameObject.GetComponent<SpriteRenderer>().sprite = SkillManager.GetSkill(Data.Name).DisplaySprite;
     }
     public void SelectSkill()
     {

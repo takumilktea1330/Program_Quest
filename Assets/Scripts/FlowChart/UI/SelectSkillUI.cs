@@ -52,7 +52,7 @@ public class SelectSkillUI : MonoBehaviour
 
     void SetSkill(Skill skill)
     {
-        targetFlow.Data.SkillName = skill.ToString();
+        targetFlow.Data.Name = skill.ToString();
         targetFlow.Display();
         uiController.ToViewMode();
         Close();

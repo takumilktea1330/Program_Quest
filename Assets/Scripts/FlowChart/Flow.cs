@@ -9,7 +9,7 @@ public class Flow : MonoBehaviour
     protected GameObject canvas; 
     //PropertyWindow propertyWindow;
     protected LineRenderer line = null;
-    protected Flow Next;
+    public Flow Next;
 
     Color blinkColor;
 

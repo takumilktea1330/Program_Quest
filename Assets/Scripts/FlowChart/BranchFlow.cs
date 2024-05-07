@@ -5,6 +5,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BranchFlow : Flow
 {
+    public Flow Branch { get; set; }
     public override void Init(string id)
     {
         base.Init(id);

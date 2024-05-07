@@ -10,9 +10,7 @@ public abstract class BattleUnit
     Status status;
     public Status Status { get => status; set => status = value; }
 
-    public void Init()
-    {
-    }
+    public void Init(){}
 
     public void ExecuteSkill(BattleUnit source, BattleUnit target, Skill skill)
     {

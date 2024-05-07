@@ -35,8 +35,8 @@ public class PropertyWindow : MonoBehaviour
         targetFlow.ShowData();
         if(targetFlow is SkillFlow)
         {
-            flowName.text = targetFlow.Data.SkillName + " (Skill Flow) ";
-            description.text = SkillManager.GetSkill(targetFlow.Data.SkillName).Description;
+            flowName.text = targetFlow.Data.Name + " (Skill Flow) ";
+            description.text = SkillManager.GetSkill(targetFlow.Data.Name).Description;
         }
         else if(targetFlow is BranchFlow)
         {

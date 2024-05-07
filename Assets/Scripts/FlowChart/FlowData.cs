@@ -12,6 +12,5 @@ public class FlowData
     public int PosX;
     public int PosY;
 
-    public string SkillName;
-    public string CondFormula;
+    public string Name;
 }
