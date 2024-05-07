@@ -9,6 +9,7 @@ public class FlowchartAnalyzer : MonoBehaviour
     [SerializeField] TMP_Text resultText;
     [SerializeField] TMP_Text messageTitle;
     [SerializeField] TMP_Text messageText;
+
     public void StartAnalysing()
     {
         //beginnning at start flow
@@ -34,7 +35,8 @@ public class FlowchartAnalyzer : MonoBehaviour
             }
             else
             {
-
+                messageTitle.text = "Error";
+                messageText.text = "Unknown flow type detected!";
             }
         }
     }

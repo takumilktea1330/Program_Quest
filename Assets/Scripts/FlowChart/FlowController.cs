@@ -23,12 +23,14 @@ public class FlowController : MonoBehaviour
         yield return Init();
         uiController.CloseLoadElementScreen();
     }
+
     private IEnumerator Init()
     {
         yield return uiController.InitUIs();
         yield return LoadPrefabs();
         yield return ChartData.StartFlowID = CreateStartFlow();
     }
+    
     private IEnumerator LoadPrefabs()
     {
         yield return _startFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/StartFlowPrefab");
@@ -132,6 +134,7 @@ public class FlowController : MonoBehaviour
             DrawConnectLines();
         }
     }
+
     void ConnectModeHandler()
     {
         if (Input.GetMouseButtonDown(0))
