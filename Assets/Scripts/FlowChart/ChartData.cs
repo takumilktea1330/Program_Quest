@@ -4,6 +4,6 @@ using UnityEngine;
 
 public static class ChartData
 {
-    public static List<Flow> Flows;
+    public static List<Flow> Flows = new();
     public static string StartFlowID;
 }

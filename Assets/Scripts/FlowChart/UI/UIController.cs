@@ -5,15 +5,16 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    GameObject CreateFlowPanel;
-    Dropdown ModeDropdown;
-    PropertyWindow propertyWindow;
-    MessageUI messageUI;
-    private void Awake() {
-        CreateFlowPanel = transform.Find("CreateFlowPanel").gameObject;
-        ModeDropdown = transform.Find("ModeDropdown").gameObject.GetComponent<Dropdown>();
-        propertyWindow = transform.Find("PropertyWindow").gameObject.GetComponent<PropertyWindow>();
-        messageUI = transform.Find("MessageUI").gameObject.GetComponent<MessageUI>();
+    [SerializeField] GameObject CreateFlowPanel;
+    [SerializeField] Dropdown ModeDropdown;
+    [SerializeField] PropertyWindow propertyWindow;
+    [SerializeField] MessageUI messageUI;
+    [SerializeField] SelectSkillUI selectSkillUI;
+    [SerializeField] LoadElementScreen loadElementScreen;
+
+    public IEnumerator InitUIs()
+    {
+        yield return selectSkillUI.Init();
     }
     public void ToViewMode()
     {
@@ -46,6 +47,22 @@ public class UIController : MonoBehaviour
     public void ClosePropertyWindow()
     {
         propertyWindow.Close();
+    }
+    public void OpenSelectSkillUI(Flow targetFlow)
+    {
+        selectSkillUI.Open(targetFlow);
+    }
+    public void CloseSelectSkillUI()
+    {
+        selectSkillUI.Close();
+    }
+    public void OpenLoadElementScreen()
+    {
+        loadElementScreen.Open();
+    }
+    public void CloseLoadElementScreen()
+    {
+        loadElementScreen.Close();
     }
     public void ModeChange()
     {

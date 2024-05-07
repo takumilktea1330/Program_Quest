@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -17,31 +18,37 @@ public class FlowController : MonoBehaviour
 
     private IEnumerator Start()
     {
-        yield return Load();
+        uiController.OpenLoadElementScreen();
         yield return SkillManager.Init();
-        uiController.ToViewMode();
-        ChartData.Flows = new List<Flow>();
-        ChartData.StartFlowID = CreateStartFlow();
-
-        yield break;
+        yield return Init();
+        uiController.CloseLoadElementScreen();
     }
-
-
-
-    // load flow prefabs from Assets/Prefabs
-    private IEnumerator Load()
+    private IEnumerator Init()
     {
-        _startFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/StartFlowPrefab");
-        yield return _startFlowPrefabHandler;
-        _skillFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillFlowPrefab");
-        yield return _skillFlowPrefabHandler;
-        _branchFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/BranchFlowPrefab");
-        yield return _branchFlowPrefabHandler;
-        _connectLinePrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/ConnectLinePrefab");
-        yield return _connectLinePrefabHandler;
-        yield break;
+        yield return uiController.InitUIs();
+        yield return LoadPrefabs();
+        yield return ChartData.StartFlowID = CreateStartFlow();
+    }
+    private IEnumerator LoadPrefabs()
+    {
+        yield return _startFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/StartFlowPrefab");
+        yield return _skillFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillFlowPrefab");
+        yield return _branchFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/BranchFlowPrefab");
+        yield return _connectLinePrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/ConnectLinePrefab");
     }
 
+    private void Update()
+    {
+        switch (ChartMode.CurrentState)
+        {
+            case ChartMode.State.View:
+                ViewModeHandler();
+                break;
+            case ChartMode.State.Connection:
+                ConnectModeHandler();
+                break;
+        }
+    }
 
     private string CreateStartFlow()
     {
@@ -55,6 +62,7 @@ public class FlowController : MonoBehaviour
 
     public void CreateSkillFlow()
     {
+        Debug.Log("CreateSkillFlow");
         string newStructId = Guid.NewGuid().ToString("N"); // get struct id
         GameObject newFlowObject = Instantiate(_skillFlowPrefabHandler.Result, new Vector3(0, 0, 0), Quaternion.identity);
         SkillFlow newFlow = newFlowObject.GetComponent<SkillFlow>();
@@ -73,6 +81,11 @@ public class FlowController : MonoBehaviour
 
     public void DeleteFlow(Flow targetFlow)
     {
+        if(targetFlow is StartFlow)
+        {
+            uiController.ShowMessage("Error", "Cannot delete StartFlow");
+            return;
+        }
         ChartData.Flows.Remove(targetFlow);
         Destroy(targetFlow.gameObject);
     }
@@ -107,8 +120,7 @@ public class FlowController : MonoBehaviour
                         if(Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
                             selectedFlow.transform.position = hit.point;
-                            //DestroyConnectLines(); //最適化できそう
-                            DrawConnectLines(); //最適化できそう
+                            DrawConnectLines();
                         }
                     }
                 }
@@ -137,25 +149,23 @@ public class FlowController : MonoBehaviour
                 // 接続開始: selectedFlow -> targetFlow
                 if(selectedFlow != null)
                 {
-                    // 接続先がStartFlowの場合は接続できない
                     Flow targetFlow = hit.collider.GetComponent<Flow>();
-                    Debug.Log("Start connection");
+
+                    // 接続先がStartFlowの場合は接続できない
                     if (targetFlow is StartFlow)
                     {
-                        Debug.Log("Cannot connect to StartFlow");
-
+                        uiController.ShowMessage("Error", "Cannot connect to StartFlow");
                     }
                     // 接続先が自分自身の場合は接続できない
                     else if(selectedFlow == targetFlow)
                     {
-                        Debug.Log("Cannot connect to itself");
+                        uiController.ShowMessage("Error", "Cannot connect to itself");
                     }
                     else
                     {
                         selectedFlow.Connect(targetFlow);
                         Debug.Log($"Connected {selectedFlow.Data.ID} -> {targetFlow.Data.ID}");
                     }
-                    Debug.Log("End connection");
                     if(blinkCoroutine != null)StopCoroutine(blinkCoroutine);
                     DrawConnectLines();
                     selectedFlow.gameObject.GetComponent<SpriteRenderer>().color = Color.white; //元の色に戻す
@@ -182,19 +192,6 @@ public class FlowController : MonoBehaviour
                     selectedFlow = null;
                 }
             }
-        }
-    }
-
-    private void Update()
-    {
-        switch (ChartMode.CurrentState)
-        {
-            case ChartMode.State.View:
-                ViewModeHandler(); 
-                break;
-            case ChartMode.State.Connection:
-                ConnectModeHandler();
-                break;
         }
     }
 }

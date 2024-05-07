@@ -6,6 +6,7 @@ static public class ChartMode
 {
     public enum State
     {
+        Loading,
         View,
         Connection,
         Processing,

@@ -25,9 +25,7 @@ public class Flow : MonoBehaviour
         blinkColor.a = 0.5f;
     }
 
-    public virtual void Display()
-    {
-    }
+    public virtual void Display(){}
 
     public virtual void ShowData()
     {
@@ -35,10 +33,7 @@ public class Flow : MonoBehaviour
         $"Position: {transform.position}");
     }
 
-    public virtual void Connect(Flow flow)
-    {
-        
-    }
+    public virtual void Connect(Flow flow){}
 
     public IEnumerator Blink()
     {
@@ -51,14 +46,10 @@ public class Flow : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
     }
+    public virtual void DrawConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler){}
 
-    public virtual void DrawConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
-    {
-        Debug.Log("Flow DrawConnectLine");
-    }
-
-    public void DestroyConnectLine()
-    {
-        Destroy(line);
-    }
+//     public void DestroyConnectLine()
+//     {
+//         Destroy(line);
+//     }
 }

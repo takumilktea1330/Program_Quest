@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using System.Security.Cryptography.X509Certificates;
 
 public class SelectSkillUI : MonoBehaviour
 {
@@ -14,33 +15,21 @@ public class SelectSkillUI : MonoBehaviour
     AsyncOperationHandle<GameObject> _skillButtonPrefabHandle;
     UIController uiController;
     Flow targetFlow;
-    
-    private void Init()
-    {
-        //foreach (GameObject button in Buttons) Destroy(button);
-        //Buttons.Clear();
 
-        targetFlow = null;
-        content = transform.Find("Viewport/Content").gameObject;
-        uiController = transform.parent.GetComponent<UIController>();
-        _skillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
-        _skillButtonPrefabHandle.WaitForCompletion();
+
+    public IEnumerator Init()
+    {
+        yield return content = transform.Find("Viewport/Content").gameObject;
+        yield return uiController = transform.parent.GetComponent<UIController>();
+        yield return _skillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
+        yield return ButtonMake();
         Debug.Log("SelectSkillUI: Initialized!");
-    }
-
-    private void Start()
-    {
         Close();
     }
 
-    public void Open(Flow targetFlow)
+    IEnumerator ButtonMake()
     {
-        Init();
-        gameObject.SetActive(true);
-        uiController.ToProcessingMode();
-        this.targetFlow = targetFlow;
-
-        foreach(Skill skill in SkillManager.Skills)
+        foreach (Skill skill in SkillManager.Skills)
         {
             GameObject newSkillButton = Instantiate(_skillButtonPrefabHandle.Result, Vector3.zero, quaternion.identity);
             Buttons.Add(newSkillButton);
@@ -51,6 +40,14 @@ public class SelectSkillUI : MonoBehaviour
 
             button.onClick.AddListener(() => SetSkill(skill)); // press button to set skill
         }
+        yield break;
+    }
+
+    public void Open(Flow targetFlow)
+    {
+        gameObject.SetActive(true);
+        uiController.ToProcessingMode();
+        this.targetFlow = targetFlow;
     }
 
     void SetSkill(Skill skill)
@@ -61,9 +58,8 @@ public class SelectSkillUI : MonoBehaviour
         Close();
     }
 
-    void Close()
+    public void Close()
     {
         gameObject.SetActive(false);
-        uiController.ToViewMode();
     }
 }
