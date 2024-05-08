@@ -12,39 +12,35 @@ public class FlowchartAnalyzer : MonoBehaviour
 
     public void StartAnalysing()
     {
-        //beginnning at start flow
-        Flow startFlow = ChartData.Flows.Find(flow => flow.Data.ID == ChartData.StartFlowID);
+        List<FlowData> flowDatasToAnalyze = SaveChartDataasJson.Load();
+        List<FlowToAnalyze> flowsToAnalyze = Convert(flowDatasToAnalyze);
+        FlowToAnalyze startFlow = flowsToAnalyze.Find(flow => flow.Data.Type == "Start");
         if(startFlow == null)
         {
             messageTitle.text = "Error";
             messageText.text = "Start flow not found!";
             return;
         }
-        resultText.text = $"----- Beginning of flowchart -----\n";
         messageTitle.text = "Processing...";
         messageText.text = "Flowchart analysis in progress...";
         Analyze(startFlow.Next);
 
-
-        void Analyze(Flow currentFlow, int depth = 0)
+        void Analyze(FlowToAnalyze currentFlow, int depth = 0)
         {
             if(currentFlow == null)
             {
-                resultText.text += "----- End of flowchart -----\n";
-                messageTitle.text = "Success";
-                messageText.text = "Flowchart analysis completed!";
                 return;
             }
-            if (currentFlow is SkillFlow skillFlow)
+            if (currentFlow.Data.Type == "Skill")
             {
-                resultText.text += $"SkillFlow: {skillFlow.Data.Name}\n";
-                Analyze(currentFlow.Next);
+                resultText.text += $"SkillFlow: {currentFlow.Data.Name}\n";
+                Analyze(currentFlow.Next, depth);
             }
-            else if (currentFlow is BranchFlow branchFlow)
+            else if (currentFlow.Data.Type == "Branch")
             {
-                resultText.text += $"BranchFlow: {branchFlow.Data.Name}\n";
-                Analyze(branchFlow.Next, depth+1);
-                Analyze(branchFlow.Branch, depth+1);
+                resultText.text += $"BranchFlow: {currentFlow.Data.Name}\n";
+                Analyze(currentFlow.Next, depth+1);
+                Analyze(currentFlow.Branch, depth+1);
             }
             else
             {
@@ -52,5 +48,40 @@ public class FlowchartAnalyzer : MonoBehaviour
                 messageText.text = "Unknown flow type detected!";
             }
         }
+        messageTitle.text = "Success";
+        messageText.text = "Flowchart analysis completed!";
+    }
+    private List<FlowToAnalyze> Convert(List<FlowData> flowDatas)
+    {
+        List<FlowToAnalyze> flows = new();
+        foreach (FlowData flowData in flowDatas)
+        {
+            FlowToAnalyze flow = new()
+            {
+                Data = flowData,
+                Next = null,
+                Branch = null
+            };
+            flows.Add(flow);
+        }
+        foreach (FlowToAnalyze flow in flows)
+        {
+            if(flow.Data.Next != null)
+            {
+                flow.Next = flows.Find(f => f.Data.ID == flow.Data.Next);
+            }
+            if(flow.Data.Branch != null)
+            {
+                flow.Branch = flows.Find(f => f.Data.ID == flow.Data.Branch);
+            }
+        }
+        return flows;
+    }
+
+    private class FlowToAnalyze
+    {
+        public FlowData Data { get; set; }
+        public FlowToAnalyze Next { get; set; }
+        public FlowToAnalyze Branch { get; set; }
     }
 }
