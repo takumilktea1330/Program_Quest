@@ -7,49 +7,69 @@ using TMPro;
 public class FlowchartAnalyzer : MonoBehaviour
 {
     [SerializeField] TMP_Text resultText;
-    [SerializeField] TMP_Text messageTitle;
     [SerializeField] TMP_Text messageText;
 
     public void StartAnalysing()
     {
         List<FlowData> flowDatasToAnalyze = SaveChartDataasJson.Load();
         List<FlowToAnalyze> flowsToAnalyze = Convert(flowDatasToAnalyze);
+        List<FlowToAnalyze> flowsAnalyzed = new();
         FlowToAnalyze startFlow = flowsToAnalyze.Find(flow => flow.Data.Type == "Start");
         if(startFlow == null)
         {
-            messageTitle.text = "Error";
-            messageText.text = "Start flow not found!";
+            messageText.text = "Error: Start flow not found\n";
             return;
         }
-        messageTitle.text = "Processing...";
-        messageText.text = "Flowchart analysis in progress...";
-        Analyze(startFlow.Next);
+        messageText.text = "Processing: Flowchart analysis in progress...\n";
+        resultText.text = "";
+        analyze(startFlow.Next);
 
-        void Analyze(FlowToAnalyze currentFlow, int depth = 0)
+        void analyze(FlowToAnalyze currentFlow, int depth = 0)
         {
             if(currentFlow == null)
             {
                 return;
             }
-            if (currentFlow.Data.Type == "Skill")
+            if(flowsAnalyzed.Contains(currentFlow))
             {
-                resultText.text += $"SkillFlow: {currentFlow.Data.Name}\n";
-                Analyze(currentFlow.Next, depth);
-            }
-            else if (currentFlow.Data.Type == "Branch")
-            {
-                resultText.text += $"BranchFlow: {currentFlow.Data.Name}\n";
-                Analyze(currentFlow.Next, depth+1);
-                Analyze(currentFlow.Branch, depth+1);
+                resultText.text += $"^ Loop detected at\n";
+                messageText.text += "Error: Loop detected\n";
+                return;
             }
             else
             {
-                messageTitle.text = "Error";
-                messageText.text = "Unknown flow type detected!";
+                flowsAnalyzed.Add(currentFlow);
+            }
+            if (currentFlow.Data.Type == "Skill")
+            {
+                insertBlank(depth);
+                resultText.text += $"> {currentFlow.Data.Name}\n";
+                analyze(currentFlow.Next, depth);
+            }
+            else if (currentFlow.Data.Type == "Branch")
+            {
+                insertBlank(depth);
+                resultText.text += $"> If: {currentFlow.Data.Name}\n";
+                analyze(currentFlow.Next, depth+1);
+                insertBlank(depth);
+                resultText.text += $"> Else: {currentFlow.Data.Name}\n";
+                analyze(currentFlow.Branch, depth+1);
+            }
+            else
+            {
+                messageText.text += "Error: Unknown flow type detected\n";
+                return;
             }
         }
-        messageTitle.text = "Success";
-        messageText.text = "Flowchart analysis completed!";
+        
+        void insertBlank(int depth)
+        {
+            for (int i = 0; i < depth; i++)
+            {
+                resultText.text += "  ";
+            }
+        }
+        messageText.text += "Finished: Flowchart analysis completed\n";
     }
     private List<FlowToAnalyze> Convert(List<FlowData> flowDatas)
     {

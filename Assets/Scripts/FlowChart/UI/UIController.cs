@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,8 +6,8 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] GameObject CreateFlowPanel;
-    [SerializeField] Dropdown ModeDropdown;
+    [SerializeField] UnityEngine.GameObject CreateFlowPanel;
+    [SerializeField] UnityEngine.GameObject ModeChangeButton;
     [SerializeField] PropertyWindow propertyWindow;
     [SerializeField] MessageUI messageUI;
     [SerializeField] SelectSkillUI selectSkillUI;
@@ -19,20 +20,20 @@ public class UIController : MonoBehaviour
     public void ToViewMode()
     {
         ChartMode.CurrentState = ChartMode.State.View;
-        ModeDropdown.gameObject.SetActive(true);
+        ModeChangeButton.SetActive(true);
         CreateFlowPanel.SetActive(true);
     }
     public void ToConnectMode()
     {
         ChartMode.CurrentState = ChartMode.State.Connection;
-        ModeDropdown.gameObject.SetActive(true);
+        ModeChangeButton.SetActive(true);
         CreateFlowPanel.SetActive(false);
         ClosePropertyWindow();
     }
     public void ToProcessingMode()
     {
         ChartMode.CurrentState = ChartMode.State.Processing;
-        ModeDropdown.gameObject.SetActive(false);
+        ModeChangeButton.SetActive(false);
         CreateFlowPanel.SetActive(false);
         ClosePropertyWindow();
     }
@@ -66,14 +67,13 @@ public class UIController : MonoBehaviour
     }
     public void ModeChange()
     {
-        switch (ModeDropdown.value)
+        if(ChartMode.CurrentState == ChartMode.State.View)
         {
-            case 0:
-                ToViewMode();
-                break;
-            case 1:
-                ToConnectMode();
-                break;
+            ToConnectMode();
+        }
+        else
+        {
+            ToViewMode();
         }
     }
 }
