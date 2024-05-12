@@ -11,6 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EditScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/WorldMap.unity
+    guid: caf23e74ee1113f45b5a0483671963af
+  - enabled: 1
+    path: Assets/Scenes/BattleScene.unity
+    guid: afeea8f1729b9457ba277b6acc794df1
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
