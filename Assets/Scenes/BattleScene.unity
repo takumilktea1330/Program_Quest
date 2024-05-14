@@ -580,12 +580,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1ff4b97935e47bda0e170e27471608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnemyBattlerBases:
-  - {fileID: 11400000, guid: 3dd23eff5e7ea4448b74b401ad693e23, type: 2}
-  - {fileID: 11400000, guid: 0bf559fb90bbb4361a3896d0709573f3, type: 2}
-  playerController: {fileID: 1672391101}
-  statusUI: {fileID: 2057720822}
-  battleDialogUI: {fileID: 1122030318}
 --- !u!1 &1341187208
 GameObject:
   m_ObjectHideFlags: 0
