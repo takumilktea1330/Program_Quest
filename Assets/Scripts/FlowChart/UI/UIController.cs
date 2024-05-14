@@ -11,11 +11,13 @@ public class UIController : MonoBehaviour
     [SerializeField] PropertyWindow propertyWindow;
     [SerializeField] MessageUI messageUI;
     [SerializeField] SelectSkillUI selectSkillUI;
+    [SerializeField] SetConditionUI setConditionUI;
     [SerializeField] LoadElementScreen loadElementScreen;
 
     public IEnumerator InitUIs()
     {
         yield return selectSkillUI.Init();
+        yield return setConditionUI.Init();
     }
     public void ToViewMode()
     {

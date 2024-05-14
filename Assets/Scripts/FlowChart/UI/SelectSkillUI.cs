@@ -11,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 public class SelectSkillUI : MonoBehaviour
 {
     List<GameObject> Buttons = new();
-    GameObject content;
+    [SerializeField] GameObject content;
     AsyncOperationHandle<GameObject> _skillButtonPrefabHandle;
     UIController uiController;
     Flow targetFlow;
@@ -19,11 +19,9 @@ public class SelectSkillUI : MonoBehaviour
 
     public IEnumerator Init()
     {
-        yield return content = transform.Find("Viewport/Content").gameObject;
         yield return uiController = transform.parent.GetComponent<UIController>();
         yield return _skillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
         yield return ButtonMake();
-        Debug.Log("SelectSkillUI: Initialized!");
         Close();
     }
 

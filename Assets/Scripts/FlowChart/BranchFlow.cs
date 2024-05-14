@@ -23,7 +23,7 @@ public class BranchFlow : Flow
     }
     public void SetCondition()
     {
-        //OnSetCondition.Invoke(this);
+        setConditionUI.Open(this);
     }
     public override void Connect(Flow flow)
     {
