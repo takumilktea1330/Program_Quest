@@ -21,6 +21,6 @@ public static class SkillManager
 
     public static Skill GetSkill(string name)
     {
-        return skills.FirstOrDefault(skill => skill.ToString() == name);
+        return skills.FirstOrDefault(skill => skill.Name == name);
     }
 }

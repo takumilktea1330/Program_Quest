@@ -3,10 +3,11 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class StartFlow : Flow
 {
-    public override void Init(string id)
+    public override void Init(string id, bool isnew = true)
     {
-        base.Init(id);
+        base.Init(id, isnew);
         Data.Type = "Start";
+        Data.Name = "Start";
     }
     public override void Display(){}
     public override void Connect(Flow target)
@@ -18,7 +19,6 @@ public class StartFlow : Flow
     {
         if(line != null) Destroy(line.gameObject);
         if (Next == null) return;
-        Debug.Log("StartFlow: DrawConnectLine");
         line = Instantiate(_connectLinePrefabHandler.Result, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
         line.SetPosition(0, transform.position);
         line.SetPosition(1, Next.transform.position);

@@ -21,14 +21,17 @@ public class FlowController : MonoBehaviour
         uiController.OpenLoadElementScreen();
         yield return SkillManager.Init();
         yield return Init();
+        yield return LoadChart();
         uiController.CloseLoadElementScreen();
     }
+
     private IEnumerator Init()
     {
         yield return uiController.InitUIs();
         yield return LoadPrefabs();
-        yield return ChartData.StartFlowID = CreateStartFlow();
+        ChartMode.CurrentState = ChartMode.State.View;
     }
+    
     private IEnumerator LoadPrefabs()
     {
         yield return _startFlowPrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/StartFlowPrefab");
@@ -52,7 +55,7 @@ public class FlowController : MonoBehaviour
 
     private string CreateStartFlow()
     {
-        return CreateFlow<Flow>(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0));
+        return CreateFlow<StartFlow>(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0));
     }
 
     public void CreateSkillFlow()
@@ -71,6 +74,8 @@ public class FlowController : MonoBehaviour
         GameObject newFlowObject = Instantiate(prefab, position, Quaternion.identity);
         T newFlow = newFlowObject.GetComponent<T>();
         newFlow.Init(newStructId);
+        newFlow.Data.PosX = position.x;
+        newFlow.Data.PosY = position.y;
         ChartData.Flows.Add(newFlow);
         return newStructId;
     }
@@ -90,8 +95,52 @@ public class FlowController : MonoBehaviour
     {
         foreach (Flow flow in ChartData.Flows)
         {
+            Debug.Log($"DrawConnectLines: {flow.Data.Name}");
             flow.DrawConnectLine(_connectLinePrefabHandler);
         }
+    }
+
+    private IEnumerator LoadChart()
+    {
+        var flowDataList = SaveChartDataasJson.Load();
+        if(flowDataList == null || flowDataList.Count == 0)
+        {
+            uiController.ShowMessage("Info", "No data found. Creating a new flowchart...");
+            yield return ChartData.StartFlowID = CreateStartFlow();
+            yield break;
+        }
+        ChartData.Flows.Clear();
+        foreach (FlowData flowData in flowDataList)
+        {
+            GameObject prefab = null;
+            switch (flowData.Type)
+            {
+                case "Start":
+                    prefab = _startFlowPrefabHandler.Result;
+                    break;
+                case "Skill":
+                    prefab = _skillFlowPrefabHandler.Result;
+                    break;
+                case "Branch":
+                    prefab = _branchFlowPrefabHandler.Result;
+                    break;
+            }
+            GameObject newFlowObject = Instantiate(prefab, new Vector3(flowData.PosX, flowData.PosY, 0), Quaternion.identity);
+            Flow newFlow = newFlowObject.GetComponent<Flow>();
+            newFlow.Data = flowData;
+            newFlow.ShowData();
+            newFlow.Init(flowData.ID, false);
+            ChartData.Flows.Add(newFlow);
+        }
+        foreach(Flow flow in ChartData.Flows)
+        {
+            if(flow.Data.Next != null)
+            {
+                flow.Next = ChartData.Flows.Find(f => f.Data.ID == flow.Data.Next);
+            }
+        }
+        DrawConnectLines();
+        yield return null;
     }
 
     void ViewModeHandler()
@@ -115,6 +164,8 @@ public class FlowController : MonoBehaviour
                         if (Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
                             selectedFlow.transform.position = hit.point;
+                            selectedFlow.Data.PosX = hit.point.x;
+                            selectedFlow.Data.PosY = hit.point.y;
                             DrawConnectLines();
                         }
                     }
@@ -132,6 +183,7 @@ public class FlowController : MonoBehaviour
             DrawConnectLines();
         }
     }
+
     void ConnectModeHandler()
     {
         if (Input.GetMouseButtonDown(0))
@@ -159,6 +211,7 @@ public class FlowController : MonoBehaviour
                     {
                         selectedFlow.Connect(targetFlow);
                         Debug.Log($"Connected {selectedFlow.Data.ID} -> {targetFlow.Data.ID}");
+                        SaveChartDataasJson.Save();
                     }
                     if(blinkCoroutine != null)StopCoroutine(blinkCoroutine);
                     DrawConnectLines();

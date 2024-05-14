@@ -11,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 public class SelectSkillUI : MonoBehaviour
 {
     List<GameObject> Buttons = new();
-    GameObject content;
+    [SerializeField] GameObject content;
     AsyncOperationHandle<GameObject> _skillButtonPrefabHandle;
     UIController uiController;
     Flow targetFlow;
@@ -19,11 +19,9 @@ public class SelectSkillUI : MonoBehaviour
 
     public IEnumerator Init()
     {
-        yield return content = transform.Find("Viewport/Content").gameObject;
         yield return uiController = transform.parent.GetComponent<UIController>();
         yield return _skillButtonPrefabHandle = Addressables.LoadAssetAsync<GameObject>("Prefabs/SkillButtonPrefab");
         yield return ButtonMake();
-        Debug.Log("SelectSkillUI: Initialized!");
         Close();
     }
 
@@ -36,7 +34,7 @@ public class SelectSkillUI : MonoBehaviour
             newSkillButton.transform.SetParent(content.transform, true); // contentの子にbuttonを追加
             Button button = newSkillButton.GetComponent<Button>();
             Text text = newSkillButton.GetComponentInChildren<Text>();
-            text.text = skill.ToString();
+            text.text = skill.Name;
 
             button.onClick.AddListener(() => SetSkill(skill)); // press button to set skill
         }
@@ -52,7 +50,7 @@ public class SelectSkillUI : MonoBehaviour
 
     void SetSkill(Skill skill)
     {
-        targetFlow.Data.Name = skill.ToString();
+        targetFlow.Data.Name = skill.Name;
         targetFlow.Display();
         uiController.ToViewMode();
         Close();

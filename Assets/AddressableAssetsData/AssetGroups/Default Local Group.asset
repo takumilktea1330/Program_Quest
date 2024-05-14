@@ -47,11 +47,17 @@ MonoBehaviour:
   - m_GUID: 04fa8609367334e41a992fbd003b9dd0
     m_Address: Prefabs/StartFlowPrefab
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - Prefab
   - m_GUID: ec62a07de37564a7da26fa366e76d509
     m_Address: Prefabs/ConnectLinePrefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 7ed5a056ec1324c88934731323e002f9
+    m_Address: Assets/Skills/Cold_Shower.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Skill
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 552f742dc413b4909bddd854fd952d7b, type: 2}
   m_SchemaSet:
