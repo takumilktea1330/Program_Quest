@@ -14,14 +14,17 @@ public class FlowController : MonoBehaviour
     AsyncOperationHandle<GameObject> _connectLinePrefabHandler;
     [SerializeField] UIController uiController;
     Flow selectedFlow; // a flow selected by user
-    IEnumerator blinkCoroutine;
+    // IEnumerator blinkCoroutine;
 
     private IEnumerator Start()
     {
         uiController.OpenLoadElementScreen();
         yield return SkillManager.Init();
+        Debug.Log("SkillManager initialized");
         yield return Init();
+        Debug.Log("UI initialized");
         yield return LoadChart();
+        Debug.Log("Chart loaded");
         uiController.CloseLoadElementScreen();
     }
 
@@ -48,7 +51,7 @@ public class FlowController : MonoBehaviour
                 ViewModeHandler();
                 break;
             case ChartMode.State.Connection:
-                ConnectModeHandler();
+                StartCoroutine(ConnectModeHandler());
                 break;
         }
     }
@@ -74,8 +77,6 @@ public class FlowController : MonoBehaviour
         GameObject newFlowObject = Instantiate(prefab, position, Quaternion.identity);
         T newFlow = newFlowObject.GetComponent<T>();
         newFlow.Init(newStructId);
-        newFlow.Data.PosX = position.x;
-        newFlow.Data.PosY = position.y;
         ChartData.Flows.Add(newFlow);
         return newStructId;
     }
@@ -91,6 +92,12 @@ public class FlowController : MonoBehaviour
         Destroy(targetFlow.gameObject);
     }
 
+    public void SelectFlowOnBoard(Flow targetFlow)
+    {
+        selectedFlow = targetFlow;
+        uiController.OpenPropertyWindow(selectedFlow);
+    }
+
     public void DrawConnectLines()
     {
         foreach (Flow flow in ChartData.Flows)
@@ -103,7 +110,16 @@ public class FlowController : MonoBehaviour
     private IEnumerator LoadChart()
     {
         var flowDataList = SaveChartDataasJson.Load();
-        if(flowDataList == null || flowDataList.Count == 0)
+        Debug.Log("FlowDataList loaded");
+        if(flowDataList == null)
+        {
+            Debug.Log("New flowchart created");
+            uiController.ShowMessage("Info", "No data found. Creating a new flowchart...");
+            yield return ChartData.StartFlowID = CreateStartFlow();
+            Debug.Log("New flowchart created");
+            yield break;
+        }
+        else if(flowDataList.Count == 0)
         {
             uiController.ShowMessage("Info", "No data found. Creating a new flowchart...");
             yield return ChartData.StartFlowID = CreateStartFlow();
@@ -138,6 +154,13 @@ public class FlowController : MonoBehaviour
             {
                 flow.Next = ChartData.Flows.Find(f => f.Data.ID == flow.Data.Next);
             }
+            if (flow is BranchFlow bflow)
+            {
+                if (bflow.Data.Branch != null)
+                {
+                    bflow.Branch = ChartData.Flows.Find(f => f.Data.ID == flow.Data.Branch);
+                }
+            }
         }
         DrawConnectLines();
         yield return null;
@@ -163,9 +186,7 @@ public class FlowController : MonoBehaviour
                         // 細かすぎる動きには反応させない
                         if (Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
-                            selectedFlow.transform.position = hit.point;
-                            selectedFlow.Data.PosX = hit.point.x;
-                            selectedFlow.Data.PosY = hit.point.y;
+                            selectedFlow.MoveFlowTo(hit.point);
                             DrawConnectLines();
                         }
                     }
@@ -184,17 +205,17 @@ public class FlowController : MonoBehaviour
         }
     }
 
-    void ConnectModeHandler()
+    IEnumerator ConnectModeHandler()
     {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 // 接続開始: selectedFlow -> targetFlow
-                if(selectedFlow != null)
+                if (selectedFlow != null)
                 {
+                    Flow sourceFlow = selectedFlow;
                     Flow targetFlow = hit.collider.GetComponent<Flow>();
 
                     // 接続先がStartFlowの場合は接続できない
@@ -203,41 +224,51 @@ public class FlowController : MonoBehaviour
                         uiController.ShowMessage("Error", "Cannot connect to StartFlow");
                     }
                     // 接続先が自分自身の場合は接続できない
-                    else if(selectedFlow == targetFlow)
+                    else if (selectedFlow == targetFlow)
                     {
                         uiController.ShowMessage("Error", "Cannot connect to itself");
                     }
                     else
                     {
-                        selectedFlow.Connect(targetFlow);
-                        Debug.Log($"Connected {selectedFlow.Data.ID} -> {targetFlow.Data.ID}");
-                        SaveChartDataasJson.Save();
+                        yield return sourceFlow.Connect(targetFlow);
                     }
-                    if(blinkCoroutine != null)StopCoroutine(blinkCoroutine);
                     DrawConnectLines();
-                    selectedFlow.gameObject.GetComponent<SpriteRenderer>().color = Color.white; //元の色に戻す
+                    sourceFlow.StopBlink();
                     selectedFlow = null;
-                    return;
+                    yield break;
                 }
                 // 接続元を選択
                 else
                 {
                     Debug.Log("Source selected");
                     selectedFlow = hit.collider.GetComponent<Flow>();
-                    blinkCoroutine = selectedFlow.Blink();
-                    StartCoroutine(blinkCoroutine);
+                    selectedFlow.StartBlink();
                 }
             }
             else
             {
-                if(selectedFlow != null)
+                if (selectedFlow != null)
                 {
                     Debug.Log("Cancel connection");
                     // 接続元以外をクリックした場合は選択を解除
-                    if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
+                    selectedFlow.StopBlink();
                     selectedFlow.gameObject.GetComponent<SpriteRenderer>().color = Color.white; //元の色に戻す
                     selectedFlow = null;
                 }
+            }
+        }
+        yield break;
+    }
+
+    void SelectModeHandler()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                selectedFlow = hit.collider.GetComponent<Flow>();
+                uiController.OpenSelectSkillUI(selectedFlow);
             }
         }
     }

@@ -53,6 +53,7 @@ public class SelectSkillUI : MonoBehaviour
         targetFlow.Data.Name = skill.Name;
         targetFlow.Display();
         uiController.ToViewMode();
+        SaveChartDataasJson.Save();
         Close();
     }
 

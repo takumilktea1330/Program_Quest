@@ -19,9 +19,17 @@ public static class SaveChartDataasJson
         Debug.Log("Chart Data Saved as Json!");
     }
 
-    public static List<FlowData> Load()
+    public static List<FlowData> Load(string json = null)
     {
-        string json = File.ReadAllText("Assets/JsonData/ChartData.json");
+        try
+        {
+            json = File.ReadAllText("Assets/JsonData/ChartData.json");
+        }
+        catch (FileNotFoundException)
+        {
+            Debug.Log("No data found!");
+            return null;
+        }
         var wrapper = JsonUtility.FromJson<Wrapper>(json);
         if(wrapper == null)
         {

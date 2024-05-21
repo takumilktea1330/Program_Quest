@@ -5,30 +5,71 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class BranchFlow : Flow
 {
-    SetConditionUI setConditionUI;
     public Flow Branch { get; set; }
+    private LineRenderer falseSideLine = null;
     public override void Init(string id, bool isnew = true)
     {
         base.Init(id, isnew);
+        Data.Name = "Branch";
         Data.Type = "Branch";
-        setConditionUI = canvas.transform.Find("SetConditionUI").GetComponent<SetConditionUI>();
         if (isnew) SetCondition();
         else Display();
     }
-    public override void Display()
-    {
-        if (Data.Name == null) Debug.LogError("BranchFlow: Data.Name is null");
-        // var skill = SkillManager.GetSkill(Data.Name);
-        // gameObject.GetComponent<SpriteRenderer>().sprite = skill.DisplaySprite;
-    }
     public void SetCondition()
     {
-        setConditionUI.Open(this);
+        Debug.Log("SetCondition");
+        uiController.OpenSetConditionUI(this);
     }
-    public override void Connect(Flow flow)
+    public override IEnumerator Connect(Flow target)
     {
-        // NextかBranchのいずれかに接続します
-        // 実装予定
         Debug.Log("BranchFlow Connect");
+        IEnumerator i = uiController.GetChoiceAlertResult(messageText, "False", "True");
+        yield return i;
+        int result = (int) i.Current;
+        if (result == 0)
+        {
+            Data.Branch = target.Data.ID;
+            Branch = target;
+            uiController.ShowMessage("Success", $"Connected: {Data.Name}(False) -> {target.Data.Name}");
+        }
+        else if (result == 1)
+        {
+            Data.Next = target.Data.ID;
+            Next = target;
+            uiController.ShowMessage("Success", $"Connected: {Data.Name}(True) -> {target.Data.Name}");
+        }
+        else if (result == 2)
+        {
+            uiController.ShowMessage("Operation Canceled", "接続をキャンセルしました");
+            yield break;
+        }
+        else
+        {
+            Debug.LogError("BranchFlow: Invalid result");
+            yield break;
+        }
+        SaveChartDataasJson.Save();
+        yield break;
     }
+    public override void DrawConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
+    {
+        if (line != null) Destroy(line.gameObject);
+        if (falseSideLine != null) Destroy(falseSideLine.gameObject);
+        if (Next != null)
+        {
+            line = Instantiate(_connectLinePrefabHandler.Result, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
+            line.GetComponentInChildren<ParticleOnLine>().Set(transform.position, Next.transform.position);
+            line.SetPosition(0, transform.position);
+            line.SetPosition(1, Next.transform.position);
+        }
+        if (Branch != null)
+        {
+            falseSideLine = Instantiate(_connectLinePrefabHandler.Result, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
+            falseSideLine.GetComponentInChildren<ParticleOnLine>().Set(transform.position, Branch.transform.position, "Red");
+            falseSideLine.SetPosition(0, transform.position);
+            falseSideLine.SetPosition(1, Branch.transform.position);
+        }
+    }
+
+    readonly string messageText = "この条件分岐をTrue側とFalse側のどちらに接続しますか？";
 }

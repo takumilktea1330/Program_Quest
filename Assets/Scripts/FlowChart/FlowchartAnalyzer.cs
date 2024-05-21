@@ -30,10 +30,15 @@ public class FlowchartAnalyzer : MonoBehaviour
             {
                 return;
             }
-            if(flowsAnalyzed.Contains(currentFlow))
+            // if(flowsAnalyzed.Contains(currentFlow))
+            // {
+            //     resultText.text += $"^ Loop detected at\n";
+            //     messageText.text += "Error: Loop detected\n";
+            //     return;
+            // }
+            if(depth > 9)
             {
-                resultText.text += $"^ Loop detected at\n";
-                messageText.text += "Error: Loop detected\n";
+                messageText.text += "Error: This chart is too deep\n";
                 return;
             }
             else

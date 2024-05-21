@@ -1,23 +1,24 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] UnityEngine.GameObject CreateFlowPanel;
-    [SerializeField] UnityEngine.GameObject ModeChangeButton;
+    [SerializeField] GameObject CreateFlowPanel;
+    [SerializeField] GameObject ModeChangeButton;
     [SerializeField] PropertyWindow propertyWindow;
     [SerializeField] MessageUI messageUI;
     [SerializeField] SelectSkillUI selectSkillUI;
     [SerializeField] SetConditionUI setConditionUI;
     [SerializeField] LoadElementScreen loadElementScreen;
+    [SerializeField] ChoiceAlert choiceAlert;
 
     public IEnumerator InitUIs()
     {
         yield return selectSkillUI.Init();
         yield return setConditionUI.Init();
+        yield return choiceAlert.Init();
+        ToViewMode();
     }
     public void ToViewMode()
     {
@@ -58,6 +59,20 @@ public class UIController : MonoBehaviour
     public void CloseSelectSkillUI()
     {
         selectSkillUI.Close();
+    }
+    public void OpenSetConditionUI(BranchFlow targetFlow)
+    {
+        setConditionUI.Open(targetFlow);
+    }
+    public void CloseSetConditionUI()
+    {
+        setConditionUI.Close();
+    }
+    public IEnumerator GetChoiceAlertResult(string message, string choice0, string choice1)
+    {
+        IEnumerator i = choiceAlert.Alert(message, choice0, choice1);
+        yield return i;
+        yield return i.Current;
     }
     public void OpenLoadElementScreen()
     {

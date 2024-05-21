@@ -9,6 +9,7 @@ static public class ChartMode
         Loading,
         View,
         Connection,
+        Select,
         Processing,
     }
     public static State CurrentState;

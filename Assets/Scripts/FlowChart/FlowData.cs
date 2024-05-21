@@ -2,13 +2,19 @@ using System;
 [Serializable]
 public class FlowData
 {
-    public string Type;
-    public string ID;
-    public string Next;// skill->next, branchflow(true)
-    public string Branch;// is used only branchflow(false)
+    public string Name = "";
+    public string Type = "";
+    public string ID = "";
+    public string Next = "";
 
-    public float PosX;
-    public float PosY;
+    public float PosX = 0;
+    public float PosY = 0;
 
-    public string Name;
+    public string Branch = "";
+    public string SourceUnit = "";
+    public string SourceStatus = "";
+    public string TargetUnit = "";
+    public string TargetStatus = "";
+    public string Operator = "";
+    public int Percentage = 0;
 }

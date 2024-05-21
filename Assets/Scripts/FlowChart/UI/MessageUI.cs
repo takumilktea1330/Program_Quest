@@ -5,13 +5,11 @@ using UnityEngine.UI;
 
 public class MessageUI : MonoBehaviour
 {
-    Text titleText;
-    Text messageText;
+    [SerializeField] Text titleText;
+    [SerializeField] Text messageText;
     void Start()
     {
-        gameObject.SetActive(false);
-        titleText = transform.Find("Title").GetComponent<Text>();
-        messageText = transform.Find("Message").GetComponent<Text>();
+        Close();
     }
 
     public void Show(string title, string message)
@@ -25,6 +23,11 @@ public class MessageUI : MonoBehaviour
     IEnumerator Hide()
     {
         yield return new WaitForSeconds(2);
+        gameObject.SetActive(false);
+    }
+
+    void Close()
+    {
         gameObject.SetActive(false);
     }
 

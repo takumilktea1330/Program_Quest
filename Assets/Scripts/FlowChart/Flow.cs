@@ -7,9 +7,10 @@ public class Flow : MonoBehaviour
 {
     public FlowData Data;
     protected GameObject canvas; 
-    //PropertyWindow propertyWindow;
     protected LineRenderer line = null;
     public Flow Next;
+    Coroutine blinkCoroutine;
+    protected UIController uiController;
 
     Color blinkColor;
 
@@ -27,22 +28,22 @@ public class Flow : MonoBehaviour
             };
         }
         canvas = GameObject.Find("MainCanvas");
-        //propertyWindow = canvas.transform.Find("PropertyWindow").GetComponent<PropertyWindow>();
+        uiController = canvas.GetComponent<UIController>();
         blinkColor = Color.white;
         blinkColor.a = 0.5f;
     }
 
     public virtual void Display(){}
 
-    public virtual void ShowData()
+    public void ShowData()
     {
         Debug.Log($"This is Flow( {Data.Name}) Data\n" +
         $"Position: {transform.position}");
     }
 
-    public virtual void Connect(Flow flow){}
+    public virtual IEnumerator Connect(Flow targetFlow){ yield break; }
 
-    public IEnumerator Blink()
+    private IEnumerator Blink()
     {
         SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         while (true)
@@ -53,10 +54,20 @@ public class Flow : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
     }
+    public void StartBlink()
+    {
+        blinkCoroutine = StartCoroutine(Blink());
+    }
+    public void StopBlink()
+    {
+        StopCoroutine(blinkCoroutine);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+    }
+    public void MoveFlowTo(Vector3 dst)
+    {
+        transform.position = dst;
+        Data.PosX = dst.x;
+        Data.PosY = dst.y;
+    }
     public virtual void DrawConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler){}
-
-//     public void DestroyConnectLine()
-//     {
-//         Destroy(line);
-//     }
 }

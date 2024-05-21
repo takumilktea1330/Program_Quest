@@ -6,13 +6,11 @@ using UnityEngine.UI;
 
 public class PropertyWindow : MonoBehaviour
 {
-    Text flowName;
-    Text description;
+    [SerializeField] Text flowName;
+    [SerializeField] Text description;
 
     void Start()
     {
-        flowName = transform.Find("FlowName").GetComponent<Text>();
-        description = transform.Find("Description").GetComponent<Text>();
         Close();
     }
     void Init()
@@ -40,7 +38,10 @@ public class PropertyWindow : MonoBehaviour
         }
         else if(targetFlow is BranchFlow)
         {
-            // name: 
+            flowName.text = targetFlow.Data.Name;
+            description.text = $"{targetFlow.Data.SourceUnit}の{targetFlow.Data.SourceStatus}が"+
+            $"{targetFlow.Data.TargetUnit}の{targetFlow.Data.TargetStatus}の{targetFlow.Data.Percentage}%{targetFlow.Data.Operator}のとき"+
+            "True側を実行し、そうでないならFalse側を実行します";
         }
         else
         {
