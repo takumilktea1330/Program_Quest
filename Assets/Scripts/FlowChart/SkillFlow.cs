@@ -32,13 +32,4 @@ public class SkillFlow : Flow
         SaveChartDataasJson.Save();
         yield break;
     }
-    public override void DrawConnectLine(AsyncOperationHandle<GameObject> _connectLinePrefabHandler)
-    {
-        if (line != null) Destroy(line.gameObject);
-        if (Next == null) return;
-        line = Instantiate(_connectLinePrefabHandler.Result, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
-        line.GetComponentInChildren<ParticleOnLine>().Set(transform.position, Next.transform.position);
-        line.SetPosition(0, transform.position);
-        line.SetPosition(1, Next.transform.position);
-    }
 }

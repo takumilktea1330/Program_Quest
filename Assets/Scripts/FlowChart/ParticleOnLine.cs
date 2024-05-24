@@ -9,14 +9,23 @@ public class ParticleOnLine : MonoBehaviour
     Vector3 end;
     bool isEnable = false;
 
-    float speed = 0.005f;
-    public void Set(Vector3 start, Vector3 end, string color = "Blue")
+    readonly float speed = 0.003f;
+    public void Set(Vector3 start, Vector3 end, string color = "#000000")
     {
         this.start = start;
         this.end = end;
         direction = (end - start).normalized;
         transform.position = start;
-        gameObject.GetComponent<SpriteRenderer>().color = color == "Blue" ? Color.blue : Color.red;
+
+        if (ColorUtility.TryParseHtmlString(color, out Color colorValue))
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = colorValue;
+        }
+        else
+        {
+            Debug.LogWarning("Invalid color code: " + color);
+        }
+
         isEnable = true;
     }
     void Update()
@@ -29,5 +38,4 @@ public class ParticleOnLine : MonoBehaviour
         }
         transform.position = newpos;
     }
-
 }

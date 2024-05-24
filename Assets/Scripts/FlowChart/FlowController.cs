@@ -81,15 +81,43 @@ public class FlowController : MonoBehaviour
         return newStructId;
     }
 
-    public void DeleteFlow(Flow targetFlow)
+    public void RemoveFlow()
     {
+        StartCoroutine(DeleteFlow());
+    }
+    IEnumerator DeleteFlow()
+    {
+        Flow targetFlow = selectedFlow;
+        if(targetFlow == null)
+        {
+            uiController.ShowMessage("Error", "No flow selected");
+            yield break;
+        }
         if(targetFlow is StartFlow)
         {
             uiController.ShowMessage("Error", "Cannot delete StartFlow");
-            return;
+            yield break;
+        }
+        IEnumerator enumerator = uiController.GetChoiceAlertResult("Are you sure you want to delete this flow?", "Yes", "No");
+        yield return enumerator;
+        switch((int)enumerator.Current)
+        {
+            case 0:
+            Debug.Log("Delete Flow");
+                break;
+            case 1:
+            Debug.Log("Operation Canceled");
+                yield break;
+            case 2:
+                uiController.ShowMessage("Operation Canceled", "Operation Canceled");
+                yield break;
+            default:
+                Debug.LogError("Invalid result");
+                yield break;
         }
         ChartData.Flows.Remove(targetFlow);
         Destroy(targetFlow.gameObject);
+        SaveChartDataasJson.Save();
     }
 
     public void SelectFlowOnBoard(Flow targetFlow)

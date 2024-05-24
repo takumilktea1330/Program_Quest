@@ -10,6 +10,16 @@ public class ChoiceAlert : MonoBehaviour
     [SerializeField] Button choice1Button;
     [SerializeField] Button CancelButton;
     int result = -1;
+
+    /// <summary>
+    /// Show an alert with two choices
+    /// return Ienumerator<int> result
+    /// 0: choice0 1: choice1 2: cancel
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="choice0"></param>
+    /// <param name="choice1"></param>
+    /// <returns></returns>
     public IEnumerator Alert(string message, string choice0, string choice1)
     {
         Open();
