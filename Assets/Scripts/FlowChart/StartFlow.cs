@@ -4,9 +4,9 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class StartFlow : Flow
 {
-    public override void Init(string id, bool isnew = true)
+    public override void Init(FlowData data = null)
     {
-        base.Init(id, isnew);
+        base.Init(data);
         Data.Type = "Start";
         Data.Name = "Start";
     }

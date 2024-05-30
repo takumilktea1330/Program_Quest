@@ -56,11 +56,6 @@ public class FlowController : MonoBehaviour
         }
     }
 
-    private string CreateStartFlow()
-    {
-        return CreateFlow<StartFlow>(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0));
-    }
-
     public void CreateSkillFlow()
     {
         CreateFlow<SkillFlow>(_skillFlowPrefabHandler.Result, new Vector3(0, 0, 0));
@@ -71,14 +66,12 @@ public class FlowController : MonoBehaviour
         CreateFlow<BranchFlow>(_branchFlowPrefabHandler.Result, new Vector3(0, 0, 0));
     }
 
-    private string CreateFlow<T>(GameObject prefab, Vector3 position) where T : Flow
+    private void CreateFlow<T>(GameObject prefab, Vector3 position) where T : Flow
     {
-        string newStructId = Guid.NewGuid().ToString("N"); // get struct id
         GameObject newFlowObject = Instantiate(prefab, position, Quaternion.identity);
         T newFlow = newFlowObject.GetComponent<T>();
-        newFlow.Init(newStructId);
+        newFlow.Init();
         ChartData.Flows.Add(newFlow);
-        return newStructId;
     }
 
     public void RemoveFlow()
@@ -139,41 +132,19 @@ public class FlowController : MonoBehaviour
     {
         var flowDataList = SaveChartDataasJson.Load();
         Debug.Log("FlowDataList loaded");
-        if(flowDataList == null)
-        {
-            Debug.Log("New flowchart created");
-            uiController.ShowMessage("Info", "No data found. Creating a new flowchart...");
-            yield return ChartData.StartFlowID = CreateStartFlow();
-            Debug.Log("New flowchart created");
-            yield break;
-        }
-        else if(flowDataList.Count == 0)
+        if(flowDataList == null || flowDataList.Count == 0)
         {
             uiController.ShowMessage("Info", "No data found. Creating a new flowchart...");
-            yield return ChartData.StartFlowID = CreateStartFlow();
+            CreateFlow<StartFlow>(_startFlowPrefabHandler.Result, new Vector3(-6, 2.5f, 0));
             yield break;
         }
         ChartData.Flows.Clear();
         foreach (FlowData flowData in flowDataList)
         {
-            GameObject prefab = null;
-            switch (flowData.Type)
-            {
-                case "Start":
-                    prefab = _startFlowPrefabHandler.Result;
-                    break;
-                case "Skill":
-                    prefab = _skillFlowPrefabHandler.Result;
-                    break;
-                case "Branch":
-                    prefab = _branchFlowPrefabHandler.Result;
-                    break;
-            }
+            GameObject prefab = GetFlowPrefabFromType(flowData.Type);
             GameObject newFlowObject = Instantiate(prefab, new Vector3(flowData.PosX, flowData.PosY, 0), Quaternion.identity);
             Flow newFlow = newFlowObject.GetComponent<Flow>();
-            newFlow.Data = flowData;
-            newFlow.ShowData();
-            newFlow.Init(flowData.ID, false);
+            newFlow.Init(flowData);
             ChartData.Flows.Add(newFlow);
         }
         foreach(Flow flow in ChartData.Flows)
@@ -194,6 +165,17 @@ public class FlowController : MonoBehaviour
         yield return null;
     }
 
+    private GameObject GetFlowPrefabFromType(string type)
+    {
+        return type switch
+        {
+            "Start" => _startFlowPrefabHandler.Result,
+            "Skill" => _skillFlowPrefabHandler.Result,
+            "Branch" => _branchFlowPrefabHandler.Result,
+            _ => null,
+        };
+    }
+
     void ViewModeHandler()
     {
         if (Input.GetMouseButton(0))
@@ -204,7 +186,6 @@ public class FlowController : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     selectedFlow = hit.collider.GetComponent<Flow>();
-                    selectedFlow.ShowData();
                     uiController.OpenPropertyWindow(selectedFlow);
                 }
                 else
@@ -214,7 +195,7 @@ public class FlowController : MonoBehaviour
                         // 細かすぎる動きには反応させない
                         if (Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
-                            selectedFlow.MoveFlowTo(hit.point);
+                            selectedFlow.MoveTo(hit.point);
                             DrawConnectLines();
                         }
                     }

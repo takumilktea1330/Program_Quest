@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -6,7 +7,6 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 public class Flow : MonoBehaviour
 {
     public FlowData Data;
-    protected GameObject canvas; 
     protected LineRenderer line = null;
     public Flow Next;
     Coroutine blinkCoroutine;
@@ -14,33 +14,28 @@ public class Flow : MonoBehaviour
 
     Color blinkColor;
 
-    public virtual void Init(string id, bool isnew = true)
+    public virtual void Init(FlowData data = null)
     {
-        if(isnew)
+        if(data == null)
         {
             Data = new()
             {
-                ID = id,
-                Name = "New Flow",
+                ID = Guid.NewGuid().ToString("N"),
+                Name = "*********",
                 Type = "Flow",
                 PosX = transform.position.x,
                 PosY = transform.position.y
             };
         }
-        canvas = GameObject.Find("MainCanvas");
-        uiController = canvas.GetComponent<UIController>();
+        else{
+            Data = data;
+        }
+        uiController = GameObject.Find("MainCanvas").GetComponent<UIController>();
         blinkColor = Color.white;
         blinkColor.a = 0.5f;
     }
 
     public virtual void Display(){}
-
-    public void ShowData()
-    {
-        Debug.Log($"This is Flow( {Data.Name}) Data\n" +
-        $"Position: {transform.position}");
-    }
-
     public virtual IEnumerator Connect(Flow targetFlow){ yield break; }
 
     private IEnumerator Blink()
@@ -63,7 +58,7 @@ public class Flow : MonoBehaviour
         StopCoroutine(blinkCoroutine);
         gameObject.GetComponent<SpriteRenderer>().color = Color.white;
     }
-    public void MoveFlowTo(Vector3 dst)
+    public void MoveTo(Vector3 dst)
     {
         transform.position = dst;
         Data.PosX = dst.x;

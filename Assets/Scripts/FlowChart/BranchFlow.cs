@@ -7,12 +7,12 @@ public class BranchFlow : Flow
 {
     public Flow Branch { get; set; }
     private LineRenderer falseSideLine = null;
-    public override void Init(string id, bool isnew = true)
+    public override void Init(FlowData data = null)
     {
-        base.Init(id, isnew);
+        base.Init(data);
         Data.Name = "Branch";
         Data.Type = "Branch";
-        if (isnew) SetCondition();
+        if (data == null) SetCondition();
         else Display();
     }
     public void SetCondition()
@@ -58,7 +58,7 @@ public class BranchFlow : Flow
         if (Branch != null)
         {
             falseSideLine = Instantiate(_connectLinePrefabHandler.Result, Vector3.zero, Quaternion.identity).GetComponent<LineRenderer>();
-            falseSideLine.GetComponentInChildren<ParticleOnLine>().Set(transform.position, Branch.transform.position, "#FA0A0A");
+            falseSideLine.GetComponentInChildren<ParticleOnLine>().Set(transform.position, Branch.transform.position, "#FFFF00");
             falseSideLine.SetPosition(0, transform.position);
             falseSideLine.SetPosition(1, Branch.transform.position);
         }

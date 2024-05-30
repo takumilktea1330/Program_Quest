@@ -7,15 +7,17 @@ public class ParticleOnLine : MonoBehaviour
     Vector3 direction;
     Vector3 start;
     Vector3 end;
+    int Distance = 0;
     bool isEnable = false;
 
-    readonly float speed = 0.003f;
-    public void Set(Vector3 start, Vector3 end, string color = "#000000")
+    readonly float speed = 0.0008f;
+    public void Set(Vector3 start, Vector3 end, string color = "#00FFFF")
     {
         this.start = start;
         this.end = end;
         direction = (end - start).normalized;
         transform.position = start;
+        Distance = (int)Vector3.Distance(start, end);
 
         if (ColorUtility.TryParseHtmlString(color, out Color colorValue))
         {
@@ -31,7 +33,7 @@ public class ParticleOnLine : MonoBehaviour
     void Update()
     {
         if (!isEnable) return;
-        Vector3 newpos = transform.position + direction * speed;
+        Vector3 newpos = transform.position + Distance * speed * direction;
         if(Vector3.Distance(newpos, end) < 0.1f)
         {
             newpos = start;

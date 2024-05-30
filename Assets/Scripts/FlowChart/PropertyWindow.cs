@@ -30,7 +30,6 @@ public class PropertyWindow : MonoBehaviour
     }
     void ShowFlowData(Flow targetFlow)
     {
-        targetFlow.ShowData();
         if(targetFlow is SkillFlow)
         {
             flowName.text = targetFlow.Data.Name;

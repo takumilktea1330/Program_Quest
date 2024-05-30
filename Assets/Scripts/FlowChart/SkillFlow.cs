@@ -4,11 +4,11 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class SkillFlow : Flow
 {
-    public override void Init(string id, bool isnew = true)
+    public override void Init(FlowData data = null)
     {
-        base.Init(id, isnew);
+        base.Init(data);
         Data.Type = "Skill";
-        if (isnew)
+        if (data == null)
         {
             SelectSkill();
         }
