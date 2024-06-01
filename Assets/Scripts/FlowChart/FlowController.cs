@@ -195,7 +195,7 @@ public class FlowController : MonoBehaviour
                         // 細かすぎる動きには反応させない
                         if (Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
                         {
-                            selectedFlow.MoveTo(hit.point);
+                            //selectedFlow.MoveTo(hit.point);
                             DrawConnectLines();
                         }
                     }

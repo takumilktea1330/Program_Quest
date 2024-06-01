@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
+
+//using UnityEngine.InputSystem;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 
@@ -11,6 +15,8 @@ public class Flow : MonoBehaviour
     public Flow Next;
     Coroutine blinkCoroutine;
     protected UIController uiController;
+    protected FlowDrag _dragAction;
+
 
     Color blinkColor;
 
@@ -33,6 +39,10 @@ public class Flow : MonoBehaviour
         uiController = GameObject.Find("MainCanvas").GetComponent<UIController>();
         blinkColor = Color.white;
         blinkColor.a = 0.5f;
+
+        _dragAction = new FlowDrag();
+        _dragAction.FlowMap.Drag.performed += OnDrag;
+        _dragAction.Enable();
     }
 
     public virtual void Display(){}
@@ -74,5 +84,14 @@ public class Flow : MonoBehaviour
             line.SetPosition(0, transform.position);
             line.SetPosition(1, Next.transform.position);
         }
+    }
+
+    private void OnDrag(InputAction.CallbackContext context)
+    {
+        Vector2 delta = context.ReadValue<Vector2>();
+        Vector3 pos = transform.position;
+        pos.x += delta.x;
+        pos.y += delta.y;
+        MoveTo(pos);
     }
 }

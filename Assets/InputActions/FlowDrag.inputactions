@@ -1,0 +1,56 @@
+{
+    "name": "Drag",
+    "maps": [
+        {
+            "name": "FlowMap",
+            "id": "1399d1cf-fa15-42cc-8cfd-984dbdd8794b",
+            "actions": [
+                {
+                    "name": "Drag",
+                    "type": "Value",
+                    "id": "d78503a3-f525-4694-85da-1d3ad5383bb0",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "MouseDrag",
+                    "id": "3cd39b7a-b122-4e78-9851-7cfe9a202302",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drag",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "d0b543af-d6bd-4fad-a4c1-f04ea943ca71",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drag",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "87345772-c0fc-4267-b051-a9435caf861f",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drag",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
