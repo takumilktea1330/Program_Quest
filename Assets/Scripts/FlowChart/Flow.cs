@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.InputSystem;
 
 //using UnityEngine.InputSystem;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 
-public class Flow : MonoBehaviour
+public class Flow : TouchableObject
 {
     public FlowData Data;
     protected LineRenderer line = null;
@@ -16,6 +17,8 @@ public class Flow : MonoBehaviour
     Coroutine blinkCoroutine;
     protected UIController uiController;
     protected FlowDrag _dragAction;
+    protected Camera mainCamera;
+    protected AsyncOperationHandle<GameObject> _connectLinePrefabHandler;
 
 
     Color blinkColor;
@@ -36,12 +39,16 @@ public class Flow : MonoBehaviour
         else{
             Data = data;
         }
+        mainCamera = Camera.main;
         uiController = GameObject.Find("MainCanvas").GetComponent<UIController>();
+        _connectLinePrefabHandler = Addressables.LoadAssetAsync<GameObject>("Prefabs/ConnectLinePrefab");
+        _connectLinePrefabHandler.WaitForCompletion();
         blinkColor = Color.white;
         blinkColor.a = 0.5f;
-
+        OnDragAction += () => { 
+            MoveTo(mainCamera.ScreenToWorldPoint(pointerEventData.position) - mainCamera.transform.position); 
+        };
         _dragAction = new FlowDrag();
-        _dragAction.FlowMap.Drag.performed += OnDrag;
         _dragAction.Enable();
     }
 
@@ -84,14 +91,5 @@ public class Flow : MonoBehaviour
             line.SetPosition(0, transform.position);
             line.SetPosition(1, Next.transform.position);
         }
-    }
-
-    private void OnDrag(InputAction.CallbackContext context)
-    {
-        Vector2 delta = context.ReadValue<Vector2>();
-        Vector3 pos = transform.position;
-        pos.x += delta.x;
-        pos.y += delta.y;
-        MoveTo(pos);
     }
 }

@@ -71,6 +71,7 @@ public class FlowController : MonoBehaviour
         GameObject newFlowObject = Instantiate(prefab, position, Quaternion.identity);
         T newFlow = newFlowObject.GetComponent<T>();
         newFlow.Init();
+        newFlow.OnDragAction += () => { DrawConnectLines(); };
         ChartData.Flows.Add(newFlow);
     }
 
@@ -123,7 +124,6 @@ public class FlowController : MonoBehaviour
     {
         foreach (Flow flow in ChartData.Flows)
         {
-            Debug.Log($"DrawConnectLines: {flow.Data.Name}");
             flow.DrawConnectLine(_connectLinePrefabHandler);
         }
     }
@@ -145,6 +145,7 @@ public class FlowController : MonoBehaviour
             GameObject newFlowObject = Instantiate(prefab, new Vector3(flowData.PosX, flowData.PosY, 0), Quaternion.identity);
             Flow newFlow = newFlowObject.GetComponent<Flow>();
             newFlow.Init(flowData);
+            newFlow.OnDragAction += () => { DrawConnectLines(); };
             ChartData.Flows.Add(newFlow);
         }
         foreach(Flow flow in ChartData.Flows)
@@ -187,18 +188,6 @@ public class FlowController : MonoBehaviour
                 {
                     selectedFlow = hit.collider.GetComponent<Flow>();
                     uiController.OpenPropertyWindow(selectedFlow);
-                }
-                else
-                {
-                    if (selectedFlow != null)
-                    {
-                        // 細かすぎる動きには反応させない
-                        if (Vector3.SqrMagnitude(selectedFlow.transform.position - hit.point) > 0.01f)
-                        {
-                            //selectedFlow.MoveTo(hit.point);
-                            DrawConnectLines();
-                        }
-                    }
                 }
             }
             else if (Input.GetMouseButtonDown(0) && selectedFlow != null)
@@ -267,18 +256,5 @@ public class FlowController : MonoBehaviour
             }
         }
         yield break;
-    }
-
-    void SelectModeHandler()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                selectedFlow = hit.collider.GetComponent<Flow>();
-                uiController.OpenSelectSkillUI(selectedFlow);
-            }
-        }
     }
 }
